@@ -3,11 +3,12 @@ test_core_exe = executable(
   files('test_log.cpp', 'test_model.cpp', 'test_commands.cpp', 'test_timeline_edits.cpp', 'test_xml.cpp',
         'test_audio_align.cpp', 'test_backup.cpp', 'test_render_profile.cpp', 'test_profile_match.cpp',
         'test_retime.cpp', 'test_import_batch.cpp', 'test_transform.cpp', 'test_release_notes.cpp', 'test_image_sequence.cpp',
-        'test_transition_native.cpp'),
+        'test_transition_native.cpp', 'test_media_search.cpp'),
   dependencies: [doctest_dep, libustudio_core_dep],
   include_directories: include_directories('../common'),
   cpp_args: ['-DTEST_DATA_DIR="' + meson.current_source_dir() / 'data' + '"',
-              '-DUSTUDIO_METAINFO_XML="' + meson.project_source_root() / 'data' / 'com.ustudio.VideoEditor.metainfo.xml' + '"'],
+              '-DUSTUDIO_METAINFO_XML="' + meson.project_source_root() / 'data' / 'com.ustudio.VideoEditor.metainfo.xml' + '"']
+            + libustudio_core_args,
   install: false,
 )
 
@@ -48,7 +49,7 @@ test_model_release_exe = executable(
   'test_model_release',
   files('test_model_release.cpp'),
   libustudio_core_sources,
-  cpp_args: ['-DNDEBUG'],
+  cpp_args: ['-DNDEBUG'] + libustudio_core_args,
   dependencies: [doctest_dep, libxml2_dep, threads_dep],
   include_directories: [src_inc, include_directories('../common')],
   install: false,

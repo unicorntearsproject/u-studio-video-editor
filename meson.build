@@ -1,6 +1,6 @@
 project(
   'u-studio-video-editor', 'cpp',
-  version: '0.81.0-beta.1',
+  version: '0.82.0-beta.1',
   license: 'MIT',
   license_files: ['LICENSE'],
   default_options: [
@@ -58,4 +58,10 @@ if get_option('render_tool')
   subdir('src/render')
 endif
 subdir('data')
+# Every test runs on a private X display and D-Bus session, never on the
+# developer's desktop (owner rule, 2026-10-08: plain `meson test` opened GTK
+# windows on the real desktop). The default, so nobody has to remember it;
+# tools/test-headless.sh says how.
+add_test_setup('headless', exe_wrapper: find_program('tools/test-headless.sh'), is_default: true)
+
 subdir('tests')

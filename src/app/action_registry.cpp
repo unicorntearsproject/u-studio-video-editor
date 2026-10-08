@@ -78,6 +78,7 @@ const std::vector<ActionSpec> &actionSpecs()
         {"project-frame-rate", "Project Frame Rate and Background…", "Project", {},   &AppWindow::projectFrameRateActivated},
         {"open-project",  "Open Project…",     "Project", {"<Control>o"},             &AppWindow::openProjectActionActivated},
         {"new-project",   "New Project",       "Project", {"<Control>n"},             &AppWindow::newProjectActionActivated},
+        {"quit",          "Quit",              "Project", {"<Control>q"},             &AppWindow::quitActionActivated},
         {"import",        "Import…",           "Project", {"<Control>i"},             &AppWindow::importActionActivated},
         {"import-folder", "Import Folder…",    "Project", {"<Control><Shift>i"},      &AppWindow::importFolderActivated},
         {"import-image-sequence", "Import Image Sequence…", "Project", {"<Control><Alt>i"}, &AppWindow::importImageSequenceActivated},

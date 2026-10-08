@@ -726,6 +726,9 @@ std::string saveProject(const Model &model, const std::string &path)
     xmlNewProp(tractor, BAD_CAST "out", BAD_CAST std::to_string(sequenceLength - 1).c_str());
 
     xmlNodePtr versionNode = addProperty(tractor, "ustudio:format_version", std::to_string(kFormatVersion));
+    // Read back only to tell a user of an older build which version to
+    // update to (reader.h, ProjectLoadError::savedBy).
+    addProperty(tractor, "ustudio:saved_by", USTUDIO_VERSION);
     addProperty(tractor, "ustudio:sequence_id", std::to_string(seq.id.value));
     addProperty(tractor, "ustudio:sequence_name", seq.name);
     addProperty(tractor, "ustudio:active_sequence", std::to_string(project.activeSequence.value));

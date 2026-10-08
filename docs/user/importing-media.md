@@ -88,13 +88,24 @@ shows a thumbnail, name, length, frame rate and format, with badges:
 
 ## Missing media
 
-If files have moved since the project was saved, it still opens:
+If files have moved since the project was saved, it still opens, and one
+message offers every way to find them:
 
-- The affected clips are drawn with red stripes and play as dark red.
-- A banner says how many files are missing. Click **Relink…** to point each
-  one at its new location, one at a time or by searching a folder. Relinking
-  is one undo step and changes nothing else.
-- Rendering with missing media asks you first.
+- **Find Automatically** looks, in this order, in the project's folder, where
+  the files were (and the folders beside it), the folders the project's other
+  media is in, your Videos, Pictures and Music folders, your home folder, and
+  mounted drives. A progress window shows where it's looking; **Cancel**
+  stops it. Files are matched by name, and by size and date when several
+  have the same name.
+- **Search a Folder…** searches a folder you pick, and everything in it.
+- **Locate…** lets you point at each file yourself. If others are in the same
+  folder, it offers to relink them too.
+- **Not Now** opens the project as it is: the affected clips are drawn with
+  red stripes and play as dark red, and a banner keeps a **Relink…** button
+  for later (with the same three ways).
+
+Relinking is one undo step and changes nothing else. Rendering with missing
+media asks you first.
 
 ## Proxies (smooth editing of 4K and phone footage)
 

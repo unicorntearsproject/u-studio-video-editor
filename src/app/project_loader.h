@@ -2,6 +2,7 @@
 
 #include "core/concurrency/thread_pool.h"
 #include "core/model/model.h"
+#include "core/xml/reader.h"
 
 #include <cstdint>
 #include <expected>
@@ -19,8 +20,8 @@ namespace ustudio::app {
 class ProjectLoader
 {
   public:
-    using Result = std::expected<core::Model, std::string>;
-    // Pool thread: core::loadProject() in the app; tests substitute their own.
+    using Result = std::expected<core::Model, core::ProjectLoadError>;
+    // Pool thread: core::loadProjectFile() in the app; tests substitute their own.
     using Parse = std::function<Result(const std::string &path)>;
     // Main thread, only for the latest load.
     using Done = std::function<void(Result result)>;

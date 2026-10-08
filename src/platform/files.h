@@ -4,6 +4,7 @@
 // headers only.
 
 #include <filesystem>
+#include <vector>
 #include <string>
 
 namespace ustudio::platform {
@@ -22,6 +23,11 @@ bool linkFile(const std::filesystem::path &target, const std::filesystem::path &
 // The user's cache folder: $XDG_CACHE_HOME, else ~/.cache (%LOCALAPPDATA%
 // on Windows). Empty if neither is known. Not created.
 std::filesystem::path userCacheDirectory();
+
+// Where removable and extra drives are mounted, most specific first, those
+// that exist: on Linux /run/media/<user> and /media/<user> (udisks), then
+// /media and /mnt (drive letters on Windows). For searching missing media.
+std::vector<std::filesystem::path> mountedVolumeRoots();
 
 // A shared library's file-name ending here: ".so" on Linux (".dll" on
 // Windows). MLT's modules are "libmlt<name>" plus this.

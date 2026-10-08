@@ -1,0 +1,73 @@
+// Not built: how tests/core/data/format{3,5,6}.ustudio were made (2026-10-08).
+// Each is the output of that era's own writer, so "every past format still
+// loads" (doc 09, "Versioning") is tested against real files, not guesses:
+//   format3.ustudio  core at bb436b55~1 (the last format-3 commit)
+//   format5.ustudio  core at 28f28882~1 (the last format-5 commit)
+//   format6.ustudio  core at 8095a6c (0.80.2-beta.1, format 6)
+// (format4.ustudio was saved by the format-4 writer in fd111b86.)
+// To make one: build that commit's src/core/libustudio_core.a, then
+//   g++ -std=c++23 -DFORMAT=<n> -I<tree>/src -I<tree>/b/src this.cpp \
+//       <tree>/b/src/core/libustudio_core.a $(pkg-config --cflags --libs libxml-2.0)
+// and run it with the output path. A new format version adds its fixture
+// the same way, from the last commit that writes it.
+// Writes a representative project with this era's own writer (FORMAT 3, 5 or 6).
+#include "core/model/model.h"
+#include "core/xml/writer.h"
+#include <cstdio>
+using namespace ustudio::core;
+static AssetId asset(Model &m, const char *path, bool video, bool audio)
+{
+    Asset a;
+    a.path = path;
+    a.displayName = path;
+    a.info.hasVideo = video;
+    a.info.hasAudio = audio;
+    a.info.lengthInSequenceFrames = 100000;
+    return m.addAsset(a);
+}
+int main(int, char **argv)
+{
+    Model m = Model::createEmpty();
+    TrackId v1 = m.addTrack(Track::Kind::Video, 0, "V1");
+    TrackId a1 = m.addTrack(Track::Kind::Audio, 1, "A1");
+    AssetId red = asset(m, "color:red", true, false), blue = asset(m, "color:blue", true, false);
+    AssetId tone = asset(m, "tone:", false, true);
+    ClipId a = m.insertClip(v1, red, 0, 0, 59);
+    ClipId b = m.insertClip(v1, blue, 60, 20, 99);
+    m.setClipEnabled(m.insertClip(a1, tone, 0, 0, 89), false, true);
+    m.addTransition(v1, a, b, 5, 5);
+    m.setTrackVolume(a1, 0.5);
+#if FORMAT >= 5
+    m.addMarker(30, "fixture marker");
+    Effect fx;
+    fx.service = "brightness";
+    Param level;
+    level.name = "level";
+    level.value = 1.0;
+    level.keyframes = {{0, 0.5, Easing::Linear}, {40, 1.0, Easing::Linear}};
+    fx.params = {level};
+    m.addEffect(Model::EffectTarget::clip(a), fx, 0);
+#endif
+#if FORMAT >= 6
+    Transform t;
+    t.bounds = Transform::Bounds::None;
+    t.x.value = 800;
+    t.y.value = 450;
+    t.width.value = 960;
+    t.height.value = 540;
+    t.rotation.value = 15;
+    t.cropLeft.value = 10;
+    t.flipH = true;
+    m.setClipTransform(b, t);
+#endif
+    if (!m.check().empty()) {
+        std::fprintf(stderr, "invalid: %s\n", m.check().front().c_str());
+        return 1;
+    }
+    const std::string error = saveProject(m, argv[1]);
+    if (!error.empty()) {
+        std::fprintf(stderr, "%s\n", error.c_str());
+        return 1;
+    }
+    return 0;
+}

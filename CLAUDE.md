@@ -287,6 +287,12 @@ with `meson test`.
   playlist primitives were each validated that way before wiring in). Report
   what you ran and what you saw.
 - Behaviour changes ship with a test in the same change when practical.
+- **Tests never touch the desktop** (owner rule, 2026-10-08). `meson test`
+  (and `just test/asan/tsan`) runs every test through
+  `tools/test-headless.sh`, the default test setup: a private Xvfb and D-Bus
+  session per test, no Wayland display, in-memory GSettings. Never bypass
+  it, and never launch the app on the owner's session to check something:
+  use a private Xvfb inside `dbus-run-session` (`docs/developer/testing.md`).
 - If any test fails, report the exact test names and output and stop
   claiming success until it is resolved or the owner explicitly defers it.
 - **Never implement production code solely to make a pre-existing failing
@@ -487,8 +493,13 @@ No permission needed for:
 - `meson setup`, `meson compile`, `meson test`, `ninja`, `clang-format
   --dry-run`, compiling a standalone repro in the scratchpad against MLT.
 - Launching the app from **your own worktree's** `builddir` to verify a
-  change. It opens a window on the owner's desktop: keep it short, close it
-  or kill the process you started, and never leave instances running.
+  change, **headless only** (owner rule, 2026-10-08): a private Xvfb display
+  inside a private `dbus-run-session` (`DISPLAY` set, `GDK_BACKEND=x11`,
+  `WAYLAND_DISPLAY` unset, `GDK_DEBUG=no-portals`, the portal-safe runtime
+  recipe in `docs/developer/testing.md`; Flatpak runs add
+  `--nosocket=wayland --socket=x11`). Nothing an agent starts may appear on
+  the owner's real desktop unless the owner asks for it explicitly. Close or
+  kill what you started; never leave instances running.
 - Reading the reference checkouts (`~/Repos/kdenlive`, the design system).
 - Installing, with `sudo dnf`, the Fedora packages that approved work needs
   (the `-devel` headers of a dependency an accepted ADR allows, a test or

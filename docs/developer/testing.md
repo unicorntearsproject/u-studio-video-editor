@@ -7,6 +7,32 @@ under `tests/`, registered with meson and run with `just test` (or
 `meson test -C builddir --print-errorlogs`). Run one suite by its meson
 name, for example `meson test -C builddir engine-sync`.
 
+## Tests never use your desktop
+
+Every test runs headless, by default (owner rule, 2026-10-08: a plain
+`meson test` opened GTK windows on the real desktop). The root
+`meson.build` makes `tools/test-headless.sh` the wrapper of the default
+test setup (`headless`), so `meson test`, `just test`, `just asan` and
+`just tsan` all go through it. For each test it:
+
+- unsets `WAYLAND_DISPLAY`, sets `GDK_BACKEND=x11`, `GDK_DEBUG=no-portals`
+  and `GSETTINGS_BACKEND=memory` (so no test writes your settings);
+- starts a private Xvfb (`-displayfd`, a free display) and points
+  `DISPLAY` at it; without Xvfb installed, `DISPLAY` is unset instead;
+- runs the test in a private `dbus-run-session` whose activated services
+  (the document portal) get a scratch runtime dir, so the desktop's
+  `/run/user/<uid>/doc` is never mounted over (see below); the test keeps
+  the real `XDG_RUNTIME_DIR`, which AT-SPI and audio need;
+- passes a caller's `LD_PRELOAD` (`just asan`) to the test only, not to
+  Xvfb and dbus-daemon.
+
+It costs about 85 ms a test (a 67-test run: about 6 s of CPU across the
+parallel jobs). A harness already inside such a session sets
+`USTUDIO_HEADLESS=1` and the wrapper runs the test as it is. The
+`headless-guard` test fails if a test can see `WAYLAND_DISPLAY` or `:0`.
+Running a test binary by hand: run it through the wrapper,
+`tools/test-headless.sh builddir/tests/app/test_<name>`.
+
 ## Layout
 
 | Folder | Meson names | Needs |
