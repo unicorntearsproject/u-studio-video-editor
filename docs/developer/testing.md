@@ -140,6 +140,10 @@ It reuses `tools/packaging-smoke/drive.py` for each step; screenshots and
 logs land in `<outdir>`. Activated services get their own runtime directory,
 as for the titles smoke test.
 
+A steps file can set `SMOKE_SCREEN` (for example `1280x800x24`) before
+sourcing `start.sh` to run on a smaller Xvfb screen, where the inspector
+floats over the picture instead of docking.
+
 `effects-render` (built with the render tool) is M5's box 2: one
 synthetic project with a keyframed transform, a masked effect, a dissolve
 with effects on both clips and a faded adjustment block, saved, then the

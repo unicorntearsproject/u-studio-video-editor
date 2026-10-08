@@ -46,6 +46,7 @@ a space, it doesn't play. Click the timeline or the preview to use them again.
 |---|---|
 | `+` or `=` / `-` | Zoom in / out |
 | `0` | Zoom to fit |
+| `F9` | Show or hide the inspector (with an add-on that adds pages, such as Effects) |
 
 ## Project
 
@@ -86,10 +87,10 @@ while you're typing in a text field.
 
 | Key | Action |
 |---|---|
-| `Shift+T` | New Title: a new title at the playhead, opened in U Stu Titles with the template gallery |
-| `Ctrl+Shift+T` | Edit Title: open the selected title clip in U Stu Titles (or double-click it) |
+| `Shift+T` | New Title: a new title at the playhead, opened in U-Stu Titles with the template gallery |
+| `Ctrl+Shift+T` | Edit Title: open the selected title clip in U-Stu Titles (or double-click it) |
 
-## U Stu Titles (the title designer)
+## U-Stu Titles (the title designer)
 
 Keys that work on the canvas only act while the canvas has focus (click
 it). Typing in a text box never triggers them.

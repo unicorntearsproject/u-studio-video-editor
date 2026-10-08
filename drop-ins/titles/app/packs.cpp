@@ -145,7 +145,7 @@ bool launchShare(const std::vector<std::string> &args, const std::function<void(
 {
     const std::string tool = shareToolPath();
     if (tool.empty()) {
-        toast("Sharing templates needs U Stu Share, which isn't installed (it's a separate download, with the "
+        toast("Sharing templates needs U-Stu Share, which isn't installed (it's a separate download, with the "
               "network access this app doesn't have)");
         return false;
     }
@@ -156,7 +156,7 @@ bool launchShare(const std::vector<std::string> &args, const std::function<void(
     GError *error = nullptr;
     GSubprocess *process = g_subprocess_newv(argv.data(), G_SUBPROCESS_FLAGS_NONE, &error);
     if (!process) {
-        toast(std::string("Couldn't start U Stu Share: ") + (error ? error->message : "?"));
+        toast(std::string("Couldn't start U-Stu Share: ") + (error ? error->message : "?"));
         g_clear_error(&error);
         return false;
     }

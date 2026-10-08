@@ -2,7 +2,7 @@
 
 [Docs home](../README.md) › User guide
 
-Everything you need to cut podcasts, streams and clips with U Stu. New?
+Everything you need to cut podcasts, streams and clips with U-Stu. New?
 Read [Installing](installing.md), then [Getting started](getting-started.md).
 
 | Page | What's in it |

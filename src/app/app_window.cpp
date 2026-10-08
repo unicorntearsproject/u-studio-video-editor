@@ -451,7 +451,7 @@ void AppWindow::buildUi(GtkApplication *app)
     m_toolbarView = ADW_TOOLBAR_VIEW(toolbarView);
 
     GtkWidget *headerBar = adw_header_bar_new();
-    m_windowTitle = ADW_WINDOW_TITLE(adw_window_title_new("U Stu", nullptr));
+    m_windowTitle = ADW_WINDOW_TITLE(adw_window_title_new("U-Stu", nullptr));
     // The title is a button: its subtitle shows the project's size and rate,
     // and clicking it changes the rate (onProjectFrameRateClicked()).
     GtkWidget *titleButton = gtk_button_new();
@@ -1384,7 +1384,7 @@ void AppWindow::showSettingsDialog()
     adw_preferences_dialog_add(
         ADW_PREFERENCES_DIALOG(dialog), buildDropInsPage(dropins::DropInRegistry::current(), *m_settings, [dialog] {
             adw_preferences_dialog_add_toast(ADW_PREFERENCES_DIALOG(dialog),
-                                             adw_toast_new("Restart U Stu to apply drop-in changes"));
+                                             adw_toast_new("Restart U-Stu to apply drop-in changes"));
         }));
 
     // --- Keyboard Shortcuts (placeholder -- see action_registry.h's own
@@ -2052,7 +2052,7 @@ void AppWindow::startImport(std::vector<std::string> paths, std::optional<core::
             }
             probed = engine::EngineSync::probeMediaFile(profile, path);
             if (probed.length <= 0)
-                probed.error = "it isn't a video, audio or image file U Stu can open";
+                probed.error = "it isn't a video, audio or image file U-Stu can open";
             probed.fingerprint = core::fileFingerprint(path);
             return probed;
         },
@@ -2374,7 +2374,7 @@ void AppWindow::onOpenProjectClicked()
         // Enhancement #6.
         GListStore *filters = g_list_store_new(GTK_TYPE_FILE_FILTER);
         GtkFileFilter *projectFilter = gtk_file_filter_new();
-        gtk_file_filter_set_name(projectFilter, "U Stu Projects (*.ustudio)");
+        gtk_file_filter_set_name(projectFilter, "U-Stu Projects (*.ustudio)");
         gtk_file_filter_add_suffix(projectFilter, "ustudio");
         g_list_store_append(filters, projectFilter);
         g_object_unref(projectFilter);
@@ -2449,10 +2449,10 @@ void AppWindow::showProjectLoadError(const std::string &path, const core::Projec
                "earlier saves are kept in the .ustudio-backups folder beside it.";
         break;
     case Kind::TooNew:
-        heading = "Saved by a newer U Stu";
+        heading = "Saved by a newer U-Stu";
         body = name + " was saved by " +
-               (error.savedBy.empty() ? std::string("a newer version of U Stu Video Editor")
-                                      : "U Stu Video Editor " + error.savedBy) +
+               (error.savedBy.empty() ? std::string("a newer version of U-Stu Video Editor")
+                                      : "U-Stu Video Editor " + error.savedBy) +
                ". Update this one (" USTUDIO_VERSION ") to open it. It was left as it is.";
         break;
     case Kind::TooOld:
@@ -2460,8 +2460,8 @@ void AppWindow::showProjectLoadError(const std::string &path, const core::Projec
         body = name + " uses a project format from before this version's oldest. It was left as it is.";
         break;
     case Kind::NotAProject:
-        heading = "Not a U Stu project";
-        body = name + " isn't a project this version of U Stu Video Editor opens. It was left as it is.";
+        heading = "Not a U-Stu project";
+        body = name + " isn't a project this version of U-Stu Video Editor opens. It was left as it is.";
         break;
     case Kind::Unreadable:
         heading = "Can't read the project";
@@ -5020,7 +5020,7 @@ bool AppWindow::pathIsProjectAsset(const std::string &path) const
 
 void AppWindow::updateWindowTitle()
 {
-    // Enhancement #4: the project name, not just "U Stu Video Editor"
+    // Enhancement #4: the project name, not just "U-Stu Video Editor"
     // for every window regardless of which project is open -- every call
     // site that changes m_currentProjectPath (Save, Open, Reload, New
     // Project, recovery) already calls something that emits
@@ -5031,7 +5031,7 @@ void AppWindow::updateWindowTitle()
     const std::string dirtyMark = m_undoStack.isClean() ? "" : " •";
     // The taskbar gets the app's name too; the header bar has no room for it
     // beside its buttons at the default width.
-    gtk_window_set_title(GTK_WINDOW(m_window), (docName + " — U Stu" + dirtyMark).c_str());
+    gtk_window_set_title(GTK_WINDOW(m_window), (docName + " — U-Stu" + dirtyMark).c_str());
     adw_window_title_set_title(m_windowTitle, (docName + dirtyMark).c_str());
     const core::Profile &format = m_model.sequence().profile;
     adw_window_title_set_subtitle(m_windowTitle, (std::to_string(format.width) + "×" + std::to_string(format.height) +

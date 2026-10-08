@@ -28,7 +28,7 @@ class TitlePage
         m_cachedPath.clear();
         build();
         host.addHints({{"titles.page-edit", "Titles", "Edit title",
-                        "Open this title in U Stu Titles to change its design", "titles-edit", nullptr},
+                        "Open this title in U-Stu Titles to change its design", "titles-edit", nullptr},
                        {"titles.page-export-format", "Titles", "Export format",
                         "With transparency (alpha) for OBS and other apps, or flattened onto the title's background",
                         nullptr, nullptr},
@@ -89,7 +89,7 @@ class TitlePage
         gtk_box_append(GTK_BOX(m_content), m_fieldsLabel);
         m_fields = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
         gtk_box_append(GTK_BOX(m_content), m_fields);
-        m_noFields = gtk_label_new("This title has no fields. Add one in U Stu Titles by typing {{name}} in a "
+        m_noFields = gtk_label_new("This title has no fields. Add one in U-Stu Titles by typing {{name}} in a "
                                    "text layer.");
         gtk_label_set_wrap(GTK_LABEL(m_noFields), TRUE);
         gtk_label_set_xalign(GTK_LABEL(m_noFields), 0.0f);

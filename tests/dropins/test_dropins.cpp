@@ -85,7 +85,7 @@ TEST_CASE("drop-ins: modules load from the given directory; bad ones are refused
     CHECK(refusals.size() == 4);
     CHECK(anyContains(refusals, "calls itself \"othername\" but its file is named for \"misnamed\""));
     CHECK(anyContains(refusals, "built for drop-in API " + std::to_string(DROPIN_API_VERSION + 1)));
-    CHECK(anyContains(refusals, "built for U Stu 0.0.0-elsewhere"));
+    CHECK(anyContains(refusals, "built for U-Stu 0.0.0-elsewhere"));
     CHECK(anyContains(refusals, "doesn't export ustudio_drop_in_describe"));
 
     FactoryPaths paths;

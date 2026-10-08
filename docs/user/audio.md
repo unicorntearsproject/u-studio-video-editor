@@ -2,7 +2,7 @@
 
 [Docs home](../README.md) › [User guide](README.md) › Audio
 
-U Stu is built for talking-head video: podcasts, interviews, streams
+U-Stu is built for talking-head video: podcasts, interviews, streams
 and the clips cut from them.
 
 ## Waveforms

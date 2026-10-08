@@ -1,6 +1,6 @@
 project(
   'u-studio-video-editor', 'cpp',
-  version: '0.81.1-beta.1',
+  version: '0.82.2-beta.1',
   license: 'MIT',
   license_files: ['LICENSE'],
   default_options: [

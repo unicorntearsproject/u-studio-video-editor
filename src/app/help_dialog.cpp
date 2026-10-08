@@ -257,12 +257,12 @@ GtkWidget *AppWindow::buildAboutPage()
     if (gtk_picture_get_paintable(GTK_PICTURE(logo))) {
         gtk_picture_set_content_fit(GTK_PICTURE(logo), GTK_CONTENT_FIT_CONTAIN);
         gtk_widget_set_size_request(logo, 420, 126);
-        gtk_picture_set_alternative_text(GTK_PICTURE(logo), "U Stu Video Editor");
+        gtk_picture_set_alternative_text(GTK_PICTURE(logo), "U-Stu Video Editor");
         gtk_box_append(GTK_BOX(box), logo);
     } else {
         g_object_ref_sink(logo);
         g_object_unref(logo);
-        GtkWidget *title = gtk_label_new("U Stu Video Editor");
+        GtkWidget *title = gtk_label_new("U-Stu Video Editor");
         gtk_widget_add_css_class(title, "title-1");
         gtk_box_append(GTK_BOX(box), title);
     }

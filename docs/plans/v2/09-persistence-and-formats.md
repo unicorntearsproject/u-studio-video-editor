@@ -93,7 +93,7 @@ versioned and handled gracefully"):
    past project format still opens" loads each one, checks its content and
    re-saves it. A new version adds its fixture in the same landing.
 4. **A newer file is refused, never guessed at**, with a dialog that names
-   the version that saved it ("Saved by a newer U Stu … update this one").
+   the version that saved it ("Saved by a newer U-Stu … update this one").
    The file is left untouched.
 5. **Data this build doesn't understand is kept.** An effect from an add-on
    that isn't installed, or a transition style this build can't play, stays
@@ -102,7 +102,7 @@ versioned and handled gracefully"):
 6. **Every failure to open is logged** (`[app] couldn't open a project: <path>:
    <reason>`), and the user sees a dialog for its kind: not found (with a
    pointer to `.ustudio-backups`), saved by a newer version, too old, not a
-   U Stu project (including the first prototype's INI files, which this
+   U-Stu project (including the first prototype's INI files, which this
    version doesn't open), unreadable, or damaged.
 
 History: 3 adds `ustudio:position` and transitions; 4 writes each track

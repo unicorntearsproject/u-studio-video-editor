@@ -1,10 +1,10 @@
 #pragma once
 
-// Handing a downloaded pack to U Stu (ADR-020, the pattern of ADR-015):
+// Handing a downloaded pack to U-Stu (ADR-020, the pattern of ADR-015):
 // the editor's `install-template-pack` action over its session bus name
 // when the editor is running (it installs and says so in its status bar),
 // else installed here straight into the user's template library, the same
-// one the editor and U Stu Titles read. A running editor is never started
+// one the editor and U-Stu Titles read. A running editor is never started
 // by this: only its name's owner is asked.
 
 #include "package/pack.h"

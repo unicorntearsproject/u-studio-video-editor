@@ -133,7 +133,7 @@ int main(int argc, char **argv)
         ustudio::core::Log::info("[app] Launched from a snap's environment; undid " + names);
     }
     const char *envLevel = std::getenv("USTUDIO_LOG_LEVEL");
-    ustudio::core::Log::info("[app] Starting U Stu Video Editor (log level=" +
+    ustudio::core::Log::info("[app] Starting U-Stu Video Editor (log level=" +
                              std::string(envLevel ? envLevel
                                          : ustudio::core::Log::defaultLevel() == ustudio::core::LogLevel::Debug
                                              ? "debug (default)"

@@ -85,6 +85,11 @@
       <summary>Show waveforms</summary>
       <description>Clips with sound show their waveform on the timeline.</description>
     </key>
+    <key name="show-inspector" type="b">
+      <default>false</default>
+      <summary>Show the inspector</summary>
+      <description>Whether the inspector (the Effects, Add and other add-on pages) is open beside the picture when the window is wide enough to dock it.</description>
+    </key>
     <key name="show-hover-preview" type="b">
       <default>true</default>
       <summary>Thumbnails in clip tooltips</summary>

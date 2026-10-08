@@ -311,7 +311,7 @@ TEST_CASE("hand-off without a running editor installs into the template library"
 {
     Mock mock(seed());
     // A scratch library, and an editor name nobody owns: this test must
-    // reach neither a running U Stu nor the user's templates.
+    // reach neither a running U-Stu nor the user's templates.
     const fs::path library = scratch() / "library";
     auto path = share::Client(mock.base).download("test/smoke-pack", "1.0.0", core::utf8String(scratch() / "dl"));
     REQUIRE(path.has_value());

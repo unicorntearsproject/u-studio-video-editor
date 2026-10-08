@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- u-studio-share's resources: the editor's stylesheet, so the helper wears
-     the same Unicorn Tears tokens as the editor and U Stu Titles. -->
+     the same Unicorn Tears tokens as the editor and U-Stu Titles. -->
 <gresources>
   <gresource prefix="/com/ustudio/Share">
     <file compressed="true">style.css</file>

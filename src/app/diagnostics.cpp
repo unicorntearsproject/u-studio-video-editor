@@ -4,7 +4,7 @@ namespace ustudio::app {
 
 std::string formatDiagnostics(const DiagnosticsFacts &facts)
 {
-    std::string text = "U Stu Video Editor " + facts.appVersion + "\n";
+    std::string text = "U-Stu Video Editor " + facts.appVersion + "\n";
     text += "MLT " + facts.mltVersion + ", GTK " + facts.gtkVersion + ", libadwaita " + facts.adwaitaVersion + "\n";
     text += std::string("Flatpak: ") + (facts.flatpak ? "yes" : "no") + "\n";
     text += "GPU acceleration: " + facts.gpu + "\n";

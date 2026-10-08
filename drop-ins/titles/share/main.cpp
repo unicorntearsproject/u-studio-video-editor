@@ -1,5 +1,5 @@
 // u-studio-share (ADR-020, doc 20, T7): browse, download and publish title
-// template packs. The one program with network access; the editor and U Stu
+// template packs. The one program with network access; the editor and U-Stu
 // Titles never link a network library.
 //
 //   u-studio-share                    browse the shared templates
@@ -433,7 +433,7 @@ gint onLocalOptions(GApplication *, GVariantDict *options, gpointer)
 void onStartup(GApplication *, gpointer)
 {
     // Dark, and the editor's stylesheet: the same brand tokens as the
-    // editor and U Stu Titles (src/app/style/style.css).
+    // editor and U-Stu Titles (src/app/style/style.css).
     adw_style_manager_set_color_scheme(adw_style_manager_get_default(), ADW_COLOR_SCHEME_FORCE_DARK);
     GtkCssProvider *provider = gtk_css_provider_new();
     gtk_css_provider_load_from_resource(provider, "/com/ustudio/Share/style.css");

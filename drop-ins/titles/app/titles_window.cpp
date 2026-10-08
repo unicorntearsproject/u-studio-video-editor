@@ -428,7 +428,7 @@ void TitlesWindow::refresh()
     const std::string subtitle = std::to_string(doc.width) + "×" + std::to_string(doc.height) + " · " +
                                  std::to_string(doc.fpsNum / std::max(1, doc.fpsDen)) + " fps";
     adw_window_title_set_subtitle(m_title, subtitle.c_str());
-    gtk_window_set_title(GTK_WINDOW(m_window), (name + " – U Stu Titles").c_str());
+    gtk_window_set_title(GTK_WINDOW(m_window), (name + " – U-Stu Titles").c_str());
     const auto enable = [this](const char *action, bool on) {
         g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action(G_ACTION_MAP(m_window), action)), on);
     };

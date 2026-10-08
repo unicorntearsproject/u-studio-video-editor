@@ -331,7 +331,7 @@ void Gallery::rebuild()
         if (shareAvailable()) {
             GtkWidget *publishButton = gtk_button_new_with_label("Publish…");
             gtk_widget_add_css_class(publishButton, "flat");
-            gtk_widget_set_tooltip_text(publishButton, "Share this pack with everyone (opens U Stu Share)");
+            gtk_widget_set_tooltip_text(publishButton, "Share this pack with everyone (opens U-Stu Share)");
             const std::string folder = installed.folder;
             connectClick(publishButton, [this, folder] { publishPack(folder, callbacks.toast); });
             gtk_box_append(GTK_BOX(actions), publishButton);
@@ -449,7 +449,7 @@ void showGallery(GtkWidget *parent, GalleryCallbacks callbacks)
     adw_header_bar_pack_start(ADW_HEADER_BAR(header), savePack);
     if (shareAvailable()) {
         GtkWidget *browse = gtk_button_new_with_label("Browse Shared…");
-        gtk_widget_set_tooltip_text(browse, "Find template packs others have shared (opens U Stu Share)");
+        gtk_widget_set_tooltip_text(browse, "Find template packs others have shared (opens U-Stu Share)");
         connectClick(browse, [gallery] { browseShared(gallery->callbacks.toast); });
         adw_header_bar_pack_end(ADW_HEADER_BAR(header), browse);
     }

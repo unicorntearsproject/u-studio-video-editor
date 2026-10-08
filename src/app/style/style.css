@@ -162,6 +162,12 @@ listview.media-list > row {
   background-color: transparent;
 }
 
+/* The inspector's tab row (Effects, Add, …) and its hide button: room
+   between the tabs and the header bar above them. */
+.inspector-tabs {
+    padding: 8px 6px 0 6px;
+}
+
 .media-browser-panel {
   background-color: @ink_800;
   border-right: 1px solid @ink_500;

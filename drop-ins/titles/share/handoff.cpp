@@ -46,7 +46,7 @@ std::expected<std::string, std::string> handOff(const std::string &packPath, con
         }
         g_object_unref(bus);
         if (sent)
-            return std::string("Sent to U Stu: it installs the pack in My Templates.");
+            return std::string("Sent to U-Stu: it installs the pack in My Templates.");
     }
     auto installed = pack::openPackage(packPath, library, pack::Replace::IfNewer);
     if (!installed)

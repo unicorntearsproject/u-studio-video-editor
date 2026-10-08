@@ -123,7 +123,7 @@ The hand-off follows ADR-015:
     - [x] The editor and titles Flatpak still have no network permission
           and link no network library. (`titles-no-network`: no network
           library in what the editor, the render tool's MLT module and
-          U Stu Titles link, no libsoup in anything they load, and no
+          U-Stu Titles link, no libsoup in anything they load, and no
           `--share=network` in the editor's manifest; the helper does link
           libsoup. Note: Fedora's libadwaita itself links libappstream,
           which links libcurl, so every libadwaita program maps libcurl
@@ -148,7 +148,7 @@ The hand-off follows ADR-015:
 ## Starting the helper from inside the editor's sandbox
 
 For VE Installers and the owner; not built yet (2026-09-28). In the Flatpak,
-U Stu Titles runs inside the editor's sandbox (`com.ustudio.VideoEditor`,
+U-Stu Titles runs inside the editor's sandbox (`com.ustudio.VideoEditor`,
 through the Titles extension), with no network. The helper is a separate
 app (`com.ustudio.Share`) with `--share=network`. The designer can't run a
 binary that isn't in its own sandbox, so it needs a way to ask the host to
@@ -159,7 +159,7 @@ start the other app, passing an action ("browse") or a pack file
 |---|---|---|---|
 | `flatpak-spawn --host flatpak run com.ustudio.Share` | runs a host command | trivial | needs `--talk-name=org.freedesktop.Flatpak`, which is host command execution for the whole editor: **out** |
 | D-Bus activation of `com.ustudio.Share` | the designer calls `org.freedesktop.Application.Activate` / `ActivateAction` on the helper's bus name; the helper's desktop file sets `DBusActivatable=true`, so the session bus starts it | GApplication does it with no new code in the helper; actions carry arguments ("browse", "publish" + a path); the editor needs only `--talk-name=com.ustudio.Share`, one name, no host access | the file to publish must reach the helper's sandbox: through the Documents portal (`Documents.AddFull` granting `com.ustudio.Share` read access), which returns a path valid inside the helper |
-| A custom URL scheme, `ustudio-share://publish?…`, through the OpenURI portal | `gtk_uri_launcher` / `org.freedesktop.portal.OpenURI`; the helper's desktop file registers `x-scheme-handler/ustudio-share` | no bus permission at all; works from any app, and from a web page ("Open in U Stu Share") | a URL can't carry a file, so publishing still needs the Documents portal (pass the document id in the URL); the portal may ask the user which app to open it with the first time; any web page can trigger the handler (the helper must treat URL input as untrusted and always confirm) |
+| A custom URL scheme, `ustudio-share://publish?…`, through the OpenURI portal | `gtk_uri_launcher` / `org.freedesktop.portal.OpenURI`; the helper's desktop file registers `x-scheme-handler/ustudio-share` | no bus permission at all; works from any app, and from a web page ("Open in U-Stu Share") | a URL can't carry a file, so publishing still needs the Documents portal (pass the document id in the URL); the portal may ask the user which app to open it with the first time; any web page can trigger the handler (the helper must treat URL input as untrusted and always confirm) |
 | The OpenURI portal on the pack file (`OpenFile`) | the helper registers for `application/x-ustudio-template-pack` | a file hand-off the portal already solves; the user sees their choice of app | only publish, not browse; needs a MIME type of its own for packs |
 
 Recommendation: **D-Bus activation** for both directions (the helper

@@ -275,12 +275,12 @@ mlt_properties metadata(mlt_service_type, const char *, void *)
     mlt_properties_set(meta, "schema_version", "7.0");
     mlt_properties_set(meta, "type", "producer");
     mlt_properties_set(meta, "identifier", "ustudio_title");
-    mlt_properties_set(meta, "title", "U Stu title");
+    mlt_properties_set(meta, "title", "U-Stu title");
     mlt_properties_set(meta, "version", "1");
     mlt_properties_set(meta, "license", "MIT");
     mlt_properties_set(meta, "language", "en");
     mlt_properties_set(meta, "description",
-                       "Plays a .ustitle file (U Stu Titles): animated text and shapes with alpha, fitted to the "
+                       "Plays a .ustitle file (U-Stu Titles): animated text and shapes with alpha, fitted to the "
                        "clip's length (intro and outro keep their timing, the hold stretches).");
     mlt_properties_set(meta, "creator", "Unicorn Tears Project");
 

@@ -61,7 +61,7 @@ Flathub submission (`tools/flathub_prep.py`).
 | Eigen 3.4.1 | git tag + commit | Build-time only (headers for movit); nothing ships |
 | movit 1.7.2 | release tarball, sha256-pinned | GPU compositing ([ADR-019](../../docs/plans/v2/adr/019-gpu-acceleration.md)); no runtime has it |
 | MLT 7.40.0 | release tarball, sha256-pinned | Distros such as Mint 22 ship 7.22; the engine relies on 7.40 |
-| U Stu | this repo (`dir` source) | `-Dbuildtype=release`, editor plus `u-studio-render` |
+| U-Stu | this repo (`dir` source) | `-Dbuildtype=release`, editor plus `u-studio-render` |
 
 - **MLT modules.** Only the modules the app and MLT's loader use are
   built: core, plus (the `affine` clip transform), normalize (`volume`),

@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=U Stu Video Editor
+Name=U-Stu Video Editor
 Comment=Non-linear video editor built on GTK4, libadwaita and MLT
 Exec=u-studio-video-editor
 Icon=com.ustudio.VideoEditor

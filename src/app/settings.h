@@ -81,6 +81,8 @@ class Settings
     void setShowTimelineThumbnails(bool show);
     bool showWaveforms() const;
     void setShowWaveforms(bool show);
+    bool showInspector() const; // docked; the narrow layout always starts hidden
+    void setShowInspector(bool show);
     bool showHoverPreview() const;
     void setShowHoverPreview(bool show);
 

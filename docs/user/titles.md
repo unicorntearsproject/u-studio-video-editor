@@ -12,17 +12,17 @@ chapter cards. They play over your video with transparency. Each title is a
 ## Putting a title on the timeline
 
 The quickest way: press **Shift+T** (New Title). A new title appears at the
-playhead on the active video track, five seconds long, and U Stu Titles
+playhead on the active video track, five seconds long, and U-Stu Titles
 opens on it with the template gallery. Pick a design, change the text, and
 save; the editor updates straight away. The file goes in a **Titles** folder
 next to your project (`Title 1.ustitle`, `Title 2.ustitle`, …). If the
 project isn't saved yet, it goes in your default project folder (Settings ›
-Locations); without one, in **U Stu Titles** in your Videos folder; and
-without a Videos folder, in U Stu's own data folder
+Locations); without one, in a folder named **U Stu Titles** in your Videos folder; and
+without a Videos folder, in U-Stu's own data folder
 (`~/.local/share/ustudio/U Stu Titles`).
 Either way the clip keeps finding it after you save the project.
 
-The **T** button in the header bar opens U Stu Titles too: on the selected
+The **T** button in the header bar opens U-Stu Titles too: on the selected
 title clip's title, or, with none selected, on a new title with the
 template gallery (it isn't added to the timeline; save it and import it,
 or use Shift+T instead).
@@ -38,7 +38,7 @@ To use a title file you already have:
 
 ## Designing a title
 
-**U Stu Titles** is the title designer (`u-studio-titles`). It opens a
+**U-Stu Titles** is the title designer (`u-studio-titles`). It opens a
 `.ustitle` file, or starts a new one.
 
 - **Add** (the **+** button) puts text, a rectangle, a rounded rectangle,
@@ -80,7 +80,7 @@ selected) restyles the whole title in the brand, keeping its layout.
 
 ## Templates
 
-**New from Template…** in U Stu Titles' main menu (**Ctrl+Shift+N**)
+**New from Template…** in U-Stu Titles' main menu (**Ctrl+Shift+N**)
 opens the gallery. The built-in templates come first, by kind: lower thirds,
 bugs and badges, cards, end screens, countdowns, and live and social. Your
 own are under **My Templates**. Click one to use it: in an empty title it
@@ -93,8 +93,8 @@ fills that title, otherwise it opens in a new window.
   puts a copy in My Templates and opens it. Built-ins never change.
 - A title made from a template is a copy: changing the template later
   doesn't change titles already made from it on its own. When you open
-  such a title in U Stu Titles and its template has changed since (you
-  edited your template, a pack was updated, or a new version of U Stu
+  such a title in U-Stu Titles and its template has changed since (you
+  edited your template, a pack was updated, or a new version of U-Stu
   changed a built-in), a bar says so. Click **Update** to take the
   template's new design. Your field text is kept, and a message names
   any field the template no longer has. Changes you made to the title's
@@ -120,13 +120,13 @@ or move it to another computer.
 - A pack's templates are read-only: use **Edit a Copy** to change one.
   **Remove Pack…** next to a pack's name removes it; titles you made from
   it keep working, with its fonts and pictures beside them.
-- **Sharing online** (coming): with **U Stu Share** installed, the
+- **Sharing online** (coming): with **U-Stu Share** installed, the
   gallery has **Browse Shared…** (find packs others have shared, download
   and install one) and **Publish…** on each pack (it shows every file it
-  would upload, and the licence, before you sign in and send it). U Stu
-  itself never goes online; U Stu Share does, and only when you ask. The
+  would upload, and the licence, before you sign in and send it). U-Stu
+  itself never goes online; U-Stu Share does, and only when you ask. The
   shared catalogue isn't online yet.
-- U Stu checks every pack before installing anything: a damaged or
+- U-Stu checks every pack before installing anything: a damaged or
   unsafe pack (files outside the pack, links, fonts it may not share,
   anything that isn't a picture, font or title) is refused, and the
   message says why. Nothing in a pack ever runs.
@@ -187,7 +187,7 @@ Type one of these into a text layer and it changes as the video plays:
 | `{{date}}` | Today's date, as 2026-09-27 |
 | `{{date:%d %B %Y}}` | Today's date in your own format (`%d` day, `%m` month number, `%B` month name, `%Y` year, `%A` weekday) |
 
-In U Stu Titles, the title is its own clip, so `{{timecode}}` and
+In U-Stu Titles, the title is its own clip, so `{{timecode}}` and
 `{{clip_time}}` count from the start of the title. The date is the day the
 video is played or exported.
 
@@ -232,7 +232,7 @@ never moves the way a title leaves.
 
 An **animated layer** plays a ready-made animation (a logo sting, an
 animated sticker or icon) inside the title, as sharp at 4K as at 720p. In
-U Stu Titles, open **+** and choose **Animation…**, then pick a **Lottie**
+U-Stu Titles, open **+** and choose **Animation…**, then pick a **Lottie**
 file (`.json`), the kind LottieFiles, After Effects (with Bodymovin) and
 many design tools export.
 
@@ -252,7 +252,7 @@ Two templates start you off: **Lower third with ringing bell** and
 **Subscribe with ringing bell** (under Bugs and badges), with a bell that
 rings every few seconds.
 
-Some files can't be used, and U Stu says why when you add one:
+Some files can't be used, and U-Stu says why when you add one:
 
 - files that use **expressions** (small scripts); export them again with
   expressions baked into keyframes (Bodymovin has an option for it);
@@ -265,7 +265,7 @@ a little different from the file's own.
 
 ## Exporting a title on its own
 
-To use a title outside U Stu (in OBS, say), use **Export…** in the
+To use a title outside U-Stu (in OBS, say), use **Export…** in the
 designer's main menu (**Ctrl+E**). Pick a format and a length. The hold
 stretches to the length, as it does on the timeline.
 
@@ -289,7 +289,7 @@ clip, at the project's frame rate. The project doesn't change.
 ## From the editor
 
 **Double-click a title clip** on the timeline (or select it and press
-**Ctrl+Shift+T**, Edit Title) to open it in U Stu Titles. The
+**Ctrl+Shift+T**, Edit Title) to open it in U-Stu Titles. The
 designer shows the video at the playhead behind the title, without the title
 itself, so you design over the real picture. Save there, and the editor
 picks up the change.
@@ -348,13 +348,13 @@ file.
   this version can't draw yet, such as text animators, which arrive with the
   animation tools. The rest of the title still plays.
 - **Rendering a project with titles in another program.** Other programs
-  (including stock `melt`) can't play `.ustitle` files. Render from U Stu,
+  (including stock `melt`) can't play `.ustitle` files. Render from U-Stu,
   or **Bake** the title clips first.
 - **"Couldn't add the animation: …".** The message says why; see
   [Animated layers](#animated-layers) for what can't be used. For a file
   with expressions, export it again with them baked into keyframes.
 - **An animated layer shows nothing.** The animation file was moved or
-  deleted (the message names it), or this build of U Stu has no animation
+  deleted (the message names it), or this build of U-Stu has no animation
   support; builds from source need ThorVG (see the developer docs).
 - **"No captions to export".** Only captions from an imported subtitle file
   are exported; import a `.srt` or `.vtt` file first.

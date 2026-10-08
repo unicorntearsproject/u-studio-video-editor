@@ -13,7 +13,7 @@ a finished design. The service is a separate project and repository.
 ## Goals
 
 - Users browse and search a catalogue of template packs, see previews,
-  and download packs into U Stu Video Editor.
+  and download packs into U-Stu Video Editor.
 - Signed-in publishers upload packs, update them with new versions, and
   withdraw them.
 - Package files are **never publicly readable**. Downloads go through

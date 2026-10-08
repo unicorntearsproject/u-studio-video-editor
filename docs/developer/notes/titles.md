@@ -254,7 +254,7 @@ Cairo 1.18, fontconfig 2.17):
 
 - **libadwaita maps libcurl.** Fedora's libadwaita links libappstream (for
   the About dialog's release notes), and libappstream links libcurl, so
-  the editor and U Stu Titles map libcurl without calling it. "No network
+  the editor and U-Stu Titles map libcurl without calling it. "No network
   library" is checked on our own link lines (`readelf` NEEDED) plus
   libsoup anywhere loaded (`titles-no-network`); the Flatpak's missing
   `--share=network` is what keeps the editor offline.

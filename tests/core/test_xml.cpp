@@ -649,7 +649,7 @@ TEST_CASE("XML format 7 only where an older build would lose data: transform key
     CHECK(loaded->clip(clip).transform.get() == placed);
 }
 
-// doc 09, "Versioning": every format a past U Stu wrote still opens. The
+// doc 09, "Versioning": every format a past U-Stu wrote still opens. The
 // fixtures are real files from each format's own writer
 // (data/generate_format_fixture.cpp.txt says how); 6 and 7 also come from
 // today's writer.

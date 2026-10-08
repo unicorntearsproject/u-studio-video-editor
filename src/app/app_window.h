@@ -358,7 +358,7 @@ class AppWindow : public ShellHost
     void loadProjectAsync(const std::string &path, std::function<void(core::Model)> adopt,
                           std::function<void(const core::ProjectLoadError &)> failed);
     // Why a project didn't open, in words that fit the kind (missing, saved
-    // by a newer version, not a U Stu project, ...), with the full reason.
+    // by a newer version, not a U-Stu project, ...), with the full reason.
     void showProjectLoadError(const std::string &path, const core::ProjectLoadError &error);
     // The part of every project swap that's the same: cancels the old
     // project's jobs, swaps the model in, clears undo, resets the engine
@@ -869,6 +869,9 @@ class AppWindow : public ShellHost
     static void zoomInActivated(GSimpleAction *, GVariant *, gpointer userData);
     static void zoomOutActivated(GSimpleAction *, GVariant *, gpointer userData);
     static void zoomFitActivated(GSimpleAction *, GVariant *, gpointer userData);
+    static void toggleInspectorActivated(GSimpleAction *, GVariant *, gpointer userData);
+    static void onInspectorCollapsedTrampoline(GObject *, GParamSpec *, gpointer userData);
+    static void onInspectorShownTrampoline(GObject *, GParamSpec *, gpointer userData);
     static void timelineClickTrampoline(GtkGestureClick *gesture, int nPress, double x, double y, gpointer userData);
     static void timelineRightClickTrampoline(GtkGestureClick *gesture, int nPress, double x, double y,
                                              gpointer userData);

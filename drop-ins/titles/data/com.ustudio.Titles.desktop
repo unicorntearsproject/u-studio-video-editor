@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=U Stu Titles
-Comment=Design animated titles and lower thirds for U Stu Video Editor
+Name=U-Stu Titles
+Comment=Design animated titles and lower thirds for U-Stu Video Editor
 Exec=u-studio-titles %F
 # Placeholder: the owner is making new logos (2026-09-27).
 Icon=com.ustudio.Titles

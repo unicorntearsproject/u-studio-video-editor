@@ -290,7 +290,7 @@ TEST_CASE("Edit Title: the action and a double-click open a title clip, and noth
     FakeShell shell(profile);
     titles::extendShell(shell);
     REQUIRE(shell.overlays.size() == 1);
-    // New Title, Edit Title, Bake Title, Open U Stu Titles, Export Captions…
+    // New Title, Edit Title, Bake Title, Open U-Stu Titles, Export Captions…
     REQUIRE(shell.actions.size() == 5);
     CHECK(std::string(shell.actions[3].first.name) == "titles-open");
     CHECK(std::string(shell.actions[4].first.name) == "titles-export-captions");
@@ -504,10 +504,10 @@ TEST_CASE("New Title: a blank title in the project's Titles folder, at the playh
 
     // The next one never overwrites it.
     CHECK(titles::newTitlePath(core::utf8String(project)) == core::utf8String(project / "Titles" / "Title 2.ustitle"));
-    // No project folder: the Videos folder's "U Stu Titles", or one in the
+    // No project folder: the Videos folder's "U-Stu Titles", or one in the
     // data dir; never a folder straight in $HOME.
     const fs::path fallback = core::pathFromUtf8(titles::newTitlePath("")).parent_path();
-    CHECK(fallback.filename() == "U Stu Titles");
+    CHECK(fallback.filename() == "U Stu Titles"); // a folder name: unchanged by the U-Stu rename
     CHECK(fallback.parent_path() != core::pathFromUtf8(g_get_home_dir()));
     titles::setTitlesLauncherForTesting(nullptr);
 }

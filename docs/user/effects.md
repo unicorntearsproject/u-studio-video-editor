@@ -14,10 +14,15 @@ them change over time, and undo anything.
 
 ## Opening the Effects pages
 
-Click the round **Inspector** button at the top right of the picture. Two
-pages appear on the right: **Effects** (the effects on what you've
-selected) and **Add** (every effect you can add). On a wide window the
-panel sits beside the picture; on a narrow one it slides over it.
+Click the round **Inspector** button at the top right of the picture, or
+press **F9**. Two pages appear on the right: **Effects** (the effects on
+what you've selected) and **Add** (every effect you can add). On a wide
+window the panel sits beside the picture; on a narrow one it slides over
+it.
+
+To give the space back to the picture, click the panel button at the
+right end of its tabs, or press **F9** again. On a wide window U-Stu
+remembers whether the panel was open and opens it the same way next time.
 
 Press **E** to jump straight to **Add**.
 
@@ -42,7 +47,7 @@ You can also:
 
 Each tile has a badge: **light**, **medium** or **heavy** is how much work
 the effect is for each frame, and a heavy one may slow playback on a busy
-project. **checking…** means U Stu hasn't finished checking that effect is
+project. **checking…** means U-Stu hasn't finished checking that effect is
 safe on this computer yet; it can't be tried on the picture until then
 (see [Unstable effects](#unstable-effects)).
 
@@ -145,7 +150,7 @@ pinning points one by one:
 
 1. Click the **record** button (the dot) beside the setting: it turns red.
 2. Play, and move the setting's slider while it plays.
-3. Let go. U Stu keeps just enough keyframes to follow what you did, so
+3. Let go. U-Stu keeps just enough keyframes to follow what you did, so
    the curve stays easy to adjust afterwards. It replaces the keyframes
    over the stretch you recorded; the rest stay.
 
@@ -190,7 +195,7 @@ also in the page's **⋮** menu.
 
 A look is a set of effects saved together, applied in one go.
 
-- **Brand looks** come with U Stu: *Unicorn Glow*, *Neon Night*,
+- **Brand looks** come with U-Stu: *Unicorn Glow*, *Neon Night*,
   *Stream Punch*, *Pastel Dream* and *Film Grain*.
 - **Save your own:** set up a clip's effects, then **⋮ › Save as a look…**
   and give it a name. It's saved in the project.
@@ -243,7 +248,7 @@ The render is unaffected.
 ## LUTs
 
 A LUT (a `.cube` file) is a ready-made colour grade, from a camera maker
-or a colourist. U Stu keeps a library of them:
+or a colourist. U-Stu keeps a library of them:
 
 1. On the **Add** page, click the **open** button beside **Unstable** and
    choose one or more `.cube` files. They're copied into a `luts` folder
@@ -268,7 +273,7 @@ Both show the frame the playhead is on; pause to compare a moment.
 
 ## More effect families
 
-Besides the effects U Stu comes with, it can use audio plugins you
+Besides the effects U-Stu comes with, it can use audio plugins you
 install:
 
 - **LADSPA** audio plugins are found by themselves. For many more audio
@@ -276,7 +281,7 @@ install:
   **LSP Plugins**' LADSPA set (on Fedora: `lsp-plugins-ladspa`); the **Add**
   page suggests it under **Audio** when it's missing.
 - **VST2** plugins and **OpenFX** plugins are off unless you turn them on:
-  the **⋯** button on the **Add** page. They're loaded when U Stu starts,
+  the **⋯** button on the **Add** page. They're loaded when U-Stu starts,
   so a change applies the next time you start it.
 
 Every plugin is checked like the other effects, and a plugin that would
@@ -284,7 +289,7 @@ load Qt is never loaded at all.
 
 ## Unstable effects
 
-When you first run U Stu with the Effects add-on (and after installing new
+When you first run U-Stu with the Effects add-on (and after installing new
 effects), it checks each effect in the background, safely apart from your
 project: that it doesn't crash, hang or ruin the picture. This takes a few
 minutes and doesn't need you. Most effects pass.

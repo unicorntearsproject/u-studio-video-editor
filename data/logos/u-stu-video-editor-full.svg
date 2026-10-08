@@ -24,7 +24,7 @@
  <path d="M91 84 C88 89 86 92 86 95 A5 5 0 0 0 96 95 C96 92 94 89 91 84 Z" fill="#2CE8F0"/>
  <path d="M53 108 H91" stroke="#32DDEB" stroke-width="3" stroke-linecap="round" opacity=".85"/>
 </g>
-<text x="294" y="132" fill="url(#title)" font-family="DejaVu Sans, sans-serif" font-weight="bold" font-size="86" letter-spacing="-4">U Stu</text>
+<text x="294" y="132" fill="url(#title)" font-family="DejaVu Sans, sans-serif" font-weight="bold" font-size="86" letter-spacing="-4">U-Stu</text>
 <rect x="300" y="155" width="78" height="6" rx="3" fill="#F042C5"/><rect x="385" y="155" width="210" height="6" rx="3" fill="#2CDBEF"/>
 <text x="296" y="201" fill="#D9D0FB" font-family="DejaVu Sans, sans-serif" font-weight="bold" font-size="29" letter-spacing="8">VIDEO EDITOR</text>
 <text x="299" y="238" fill="#9589BA" font-family="DejaVu Sans, sans-serif" font-size="17" letter-spacing="3">BY UNICORN TEARS</text>
