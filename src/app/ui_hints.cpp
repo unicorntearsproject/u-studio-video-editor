@@ -119,6 +119,7 @@ std::vector<HintSpec> &registry()
         {"media.insert",       "Media browser", "Insert at the playhead", "On the active track", nullptr, "Double-click a row"},
         {"media.add-files",    "Media browser", "Add files without placing them", nullptr, nullptr, "Drop files from the file manager onto the browser"},
         {"relink.locate",      "Relink media", "Locate the file", "Pick where this one is now", nullptr, nullptr},
+        {"relink.find-automatically", "Relink media", "Find automatically", "Looks in the project's folder, where the files were, folders the project's other media is in, Videos, Pictures and Music, your home folder and mounted drives; by name, then by size and date", nullptr, nullptr},
         {"relink.search-folder", "Relink media", "Search a folder", "Finds each missing file by name (and by size and date among several)", nullptr, nullptr},
         {"media.create-proxy", "Media browser", "Create proxy", "A smaller copy that plays smoothly while you edit (Settings: Proxy size); renders use the original", nullptr, nullptr},
         {"media.conform-proxy", "Media browser", "Create conformed proxy", "Full size at the project's frame rate: for phone or screen recordings whose rate varies", nullptr, nullptr},

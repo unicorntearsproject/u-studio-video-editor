@@ -202,6 +202,17 @@ class AppWindow : public ShellHost
     // for the clips using it), then relinks the good ones as one command.
     void relinkTo(std::vector<std::pair<core::AssetId, std::string>> candidates);
     void searchFolderForMissing(const std::string &folder);
+    // After a project opens with missing media: one dialog with every way to
+    // find it (Find Automatically, Search a Folder, Locate, Not Now).
+    void offerMissingMediaHelp();
+    // Searches the logical places (core::mediaSearchRoots()) on the pool,
+    // with progress and Cancel, and relinks what it finds as one step.
+    void findMissingAutomatically();
+    // The folder picker for Search a Folder.
+    void chooseFolderToSearchForMissing();
+    // A Locate pick: the other missing files found beside it are offered
+    // too, so the whole relink is one undo step.
+    void relinkLocated(core::AssetId asset, const std::string &path);
     void onMediaUnavailable(const std::string &path);
     // M4 F2, transform handles over the preview (app/transform_overlay.cpp).
     void setUpTransformOverlay();
@@ -272,6 +283,10 @@ class AppWindow : public ShellHost
     AdwPreferencesGroup *m_relinkGroup = nullptr;
     std::vector<GtkWidget *> m_relinkRows;
     static void relinkDialogClosedTrampoline(AdwDialog *dialog, gpointer userData);
+    // Find Automatically's progress dialog while it runs, and its cancel flag.
+    AdwDialog *m_findMissingDialog = nullptr;
+    GtkLabel *m_findMissingLabel = nullptr;
+    std::shared_ptr<std::atomic<bool>> m_findMissingCancel;
     // Enhancement #7 (media-browser half): adds the file to the project bin
     // only -- no clip, no track needed.
     // Doc 13 R7: the profile an import should set first (the first video

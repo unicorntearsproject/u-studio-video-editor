@@ -2428,6 +2428,7 @@ void AppWindow::loadProjectFromPath(const std::string &requestedPath)
             refreshTimeline();
             refreshMediaBrowser();
             showStatus("Opened: " + path + unplayedEffectsNotice() + missingMediaNotice());
+            offerMissingMediaHelp(); // one dialog with every way to find them
             // Enhancement #15: recorded regardless of how the project got
             // opened (dialog or the recent-projects menu itself), so
             // re-opening it later keeps bumping it back to the top.

@@ -24,6 +24,7 @@ libustudio_core_sources = files(
   'media/frame_hash.cpp',
   'media/image_sequence.cpp',
   'media/missing_media.cpp',
+  'media/media_search.cpp',
 )
 
 threads_dep = dependency('threads')

@@ -32,6 +32,23 @@ bool linkFile(const std::filesystem::path &target, const std::filesystem::path &
     return !ec;
 }
 
+std::vector<std::filesystem::path> mountedVolumeRoots()
+{
+    std::vector<std::filesystem::path> roots;
+    std::vector<std::filesystem::path> candidates;
+    if (const char *user = std::getenv("USER"); user && *user) {
+        candidates.push_back(std::filesystem::path("/run/media") / user);
+        candidates.push_back(std::filesystem::path("/media") / user);
+    }
+    candidates.insert(candidates.end(), {"/media", "/mnt"});
+    for (const std::filesystem::path &candidate : candidates) {
+        std::error_code ec;
+        if (std::filesystem::is_directory(candidate, ec))
+            roots.push_back(candidate);
+    }
+    return roots;
+}
+
 std::filesystem::path userCacheDirectory()
 {
     // As GLib's g_get_user_cache_dir(): an empty or relative
