@@ -23,7 +23,7 @@ import check_release_notes
 
 # USTUDIO_FLATHUB_REPO points the tag lookup (and the generated source) at
 # another repository, e.g. a local clone with a test tag.
-REPO_URL = os.environ.get("USTUDIO_FLATHUB_REPO", "https://github.com/iDoMeteor/u-studio-video-editor.git")
+REPO_URL = os.environ.get("USTUDIO_FLATHUB_REPO", "https://github.com/unicorntearsproject/u-studio-video-editor.git")
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PACKAGING = ROOT / "packaging" / "flatpak"
 # The app source block in the local manifest, from its `sources:` line to

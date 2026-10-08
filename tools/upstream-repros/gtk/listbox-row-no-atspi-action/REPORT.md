@@ -78,4 +78,4 @@ An activatable row exposes an action (for example `activate`) that emits `row-ac
 
 ## Additional information
 
-Found while scripting UI tests over AT-SPI for a GTK4/libadwaita app: expander rows in a preferences dialog could only be opened by clicking at screen coordinates. Repro and probe: https://github.com/iDoMeteor/u-studio-video-editor/tree/main/tools/upstream-repros/gtk/listbox-row-no-atspi-action
+Found while scripting UI tests over AT-SPI for a GTK4/libadwaita app: expander rows in a preferences dialog could only be opened by clicking at screen coordinates. Repro and probe: https://github.com/unicorntearsproject/u-studio-video-editor/tree/main/tools/upstream-repros/gtk/listbox-row-no-atspi-action

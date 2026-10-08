@@ -140,7 +140,7 @@ manifest (the app pinned to the tag's commit), the module files, and
 |---|---|---|
 | `com.unicornviz.UStu` | Token on unicornviz.com | The domain already hosts the downloads |
 | `com.djunicorntears.UStu` | Token on djunicorntears.com | The current homepage |
-| `io.github.idometeor.UStu` | Nothing extra | Ties the ID to the GitHub account and repo name |
+| `io.github.unicorntearsproject.UStu` | Nothing extra | Ties the ID to the GitHub account (renamed from iDoMeteor, 2026-10) and repo name |
 
 Renaming touches these:
 - the app ID in `main.cpp`;
@@ -388,6 +388,25 @@ Publish the app and its extensions together, after the smoke test and
 `just dist`. The CDN's firewall answers command-line downloaders (curl,
 wget) with 403, so check a published URL with a browser User-Agent:
 `curl -sI -A 'Mozilla/5.0' <url>`.
+
+### Release directories for other sites
+
+The owner also lists U Stu on software.rustybucket.ai (2026-10-08). That
+site wants `<product>-<version>-<platform>.<ext>` names, a `SHA256SUMS`
+file and its detached OpenPGP signature `SHA256SUMS.asc`, and never
+rewrites a published version. `just release-dir <version>` makes one from
+the bundles `just dist` copied:
+
+- it checks each bundle against its `.sha256` sidecar first;
+- the copies are `u-studio-video-editor[-dropin-titles|-dropin-effects]-<version>-linux-x86_64.flatpak`
+  in `<dist folder>/releases/<version>/`, which must not exist yet;
+- `SHA256SUMS` lists them by file name, as `sha256sum` writes it;
+- with `USTUDIO_SIGNING_KEY` set to the product key's fingerprint, it signs
+  `SHA256SUMS` and verifies the signature. The key is the owner's; the
+  recipe never picks one, and unsigned output says so.
+
+Our own bucket and the dist folder keep our names. The other site's team
+publishes from the directory.
 
 ## Releases
 

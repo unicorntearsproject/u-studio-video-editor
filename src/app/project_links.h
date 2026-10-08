@@ -8,7 +8,7 @@ namespace ustudio::app::links {
 
 inline constexpr const char *kProjectName = "the Unicorn Tears Project";
 inline constexpr const char *kProjectUrl = "https://djunicorntears.com";
-inline constexpr const char *kSourceUrl = "https://github.com/idometeor/u-studio-video-editor";
-inline constexpr const char *kLicenseUrl = "https://github.com/idometeor/u-studio-video-editor/blob/main/LICENSE";
+inline constexpr const char *kSourceUrl = "https://github.com/unicorntearsproject/u-studio-video-editor";
+inline constexpr const char *kLicenseUrl = "https://github.com/unicorntearsproject/u-studio-video-editor/blob/main/LICENSE";
 
 } // namespace ustudio::app::links

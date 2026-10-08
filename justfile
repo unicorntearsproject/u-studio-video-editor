@@ -209,6 +209,38 @@ publish artifact:
         "s3://{{publish_bucket}}/$latest.sha256"
     echo "published: $name, $latest (+ .sha256), sha256 $sum"
 
+# A release directory for another distributor's site (owner, 2026-10-08:
+# software.rustybucket.ai), from the app and add-on bundles `just dist` put
+# in the distribution folder: renamed copies <product>-<version>-<platform>
+# .flatpak, SHA256SUMS over them, and SHA256SUMS.asc when USTUDIO_SIGNING_KEY
+# names the product's OpenPGP key (the owner's; nothing here picks one).
+# Lands in <dist folder>/releases/<version>/ and never touches an existing
+# one. Every copy must match its .sha256 sidecar first.
+# A signed release directory for another site, from the dist folder's bundles.
+release-dir version:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    src="{{dist_dir}}"; out="$src/releases/{{version}}"; platform=linux-x86_64
+    if [ -e "$out" ]; then echo "release-dir: $out exists; a published release is never rewritten" >&2; exit 1; fi
+    names=(u-studio-video-editor u-studio-video-editor-dropin-titles u-studio-video-editor-dropin-effects)
+    for n in "${names[@]}"; do
+        f="$src/$n-{{version}}.flatpak"
+        [ -f "$f" ] && [ -f "$f.sha256" ] || { echo "release-dir: $f or its .sha256 is missing (just dist first)" >&2; exit 1; }
+        [ "$(sha256sum "$f" | cut -d' ' -f1)" = "$(cut -d' ' -f1 "$f.sha256")" ] || { echo "release-dir: $f doesn't match its .sha256" >&2; exit 1; }
+    done
+    mkdir -p "$out"
+    for n in "${names[@]}"; do
+        cp --no-clobber "$src/$n-{{version}}.flatpak" "$out/$n-{{version}}-$platform.flatpak"
+    done
+    (cd "$out" && sha256sum -- *.flatpak > SHA256SUMS && sha256sum -c --quiet SHA256SUMS)
+    if [ -n "${USTUDIO_SIGNING_KEY:-}" ]; then
+        gpg --batch --armor --detach-sign --local-user "$USTUDIO_SIGNING_KEY" --output "$out/SHA256SUMS.asc" "$out/SHA256SUMS"
+        gpg --verify "$out/SHA256SUMS.asc" "$out/SHA256SUMS"
+    else
+        echo "release-dir: unsigned (set USTUDIO_SIGNING_KEY to the product key's fingerprint for SHA256SUMS.asc)"
+    fi
+    echo "release-dir: $out"; ls -l "$out"
+
 # Drop-in configurations (ADR-013/014, doc 15 "Gating"): the full suite with
 # every drop-in built in, or every one as a loadable module (each in its own
 # build dir). The default build (`just test`) has them all disabled. Only
