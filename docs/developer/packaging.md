@@ -2,6 +2,33 @@
 
 [Docs home](../README.md) › [Developer docs](README.md) › Packaging
 
+## Distribution roadmap
+
+Owner decisions, 2026-10-08:
+
+| Decision | Value |
+|---|---|
+| Display name | U-Stu Video Editor |
+| Developer name (metainfo `<developer>`, store listings) | Unicorn Tears Project |
+| App ID | `org.unicorntearsproject.UStu`, like all the owner's software under `org.unicorntearsproject.*`. Not renamed yet: it waits for the domain check below |
+| Formats today | Flatpak only, on our download bucket and [software.rustybucket.ai](#release-directories-for-softwarerustybucketai) |
+
+Stores and formats, in order:
+
+1. **Flathub**, once there's a stable release ([Flathub submission](#flathub-submission)). The owner is creating the account.
+2. **Snap Store** ([Snap](#snap)).
+3. **Fedora COPR, AUR, `.deb` and AppImage.** Not scoped yet.
+4. **Windows**, after the port ([ADR-017](../plans/v2/adr/017-windows-secondary-target.md)). macOS isn't a target.
+
+Open:
+
+- **Domain verification** for `org.unicorntearsproject`. Flathub checks a
+  token at `https://unicorntearsproject.org/.well-known/org.flathub.VerifiedApps.txt`,
+  so the owner needs that domain. Being confirmed with the owner.
+- **When 1.0.0 ships.** Flathub takes stable releases only. The
+  [Releases](#releases) section below still names `2.0.0` at M7, from
+  before the pre-1.0 versioning rule; to be settled.
+
 ## Flatpak
 
 The beta Flatpak is built from `packaging/flatpak/com.ustudio.VideoEditor.yml`
@@ -117,7 +144,7 @@ manifest (the app pinned to the tag's commit), the module files, and
 
 | Requirement | State |
 |---|---|
-| App ID on a domain the owner controls, or `io.github.<user>.<repo>` | **Open.** `com.ustudio.*` can't be verified; the options are below |
+| App ID on a domain the owner controls, or `io.github.<user>.<repo>` | **Decided, not applied:** `org.unicorntearsproject.UStu` (owner, 2026-10-08), once the domain is confirmed; renaming touches the places below |
 | Domain verification: token at `https://<domain>/.well-known/org.flathub.VerifiedApps.txt` | Needs the chosen ID; the owner uploads the token |
 | Stable release, `type="stable"` `<release>` entry, tag pushed | Waits for the first stable release |
 | Builds offline from pinned sources (sha256 or commit) | Done: every source is pinned; `just flatpak` builds with no network |
@@ -125,7 +152,7 @@ manifest (the app pinned to the tag's commit), the module files, and
 | Licence files per module in `share/licenses/$FLATPAK_ID` | Done: flatpak-builder installs them, the app's MIT `LICENSE` included |
 | Metainfo `project_license` matches the source | Done: `MIT` (the app). The GPL parts are bundled dependencies with their own licence files |
 | `flatpak-builder-lint` (manifest, repo, appstream) | Not run yet: needs `org.flatpak.Builder` (owner question) |
-| Metainfo: `<developer id=…><name>` | **Open:** needs the developer name and ID |
+| Metainfo: `<developer id=…><name>` | **Decided, not applied:** name "Unicorn Tears Project", id `org.unicorntearsproject`, with the app ID rename |
 | Metainfo: screenshots at a tag or commit URL, window only, ≤ 1000×700, captions without full stops | **Open:** who makes them, and where they're hosted |
 | Metainfo: branding colours | Done: `#FC3CBA` light, `#A04BFA` dark |
 | Metainfo: OARS rating | Done: `oars-1.1`, no content |
@@ -135,6 +162,9 @@ manifest (the app pinned to the tag's commit), the module files, and
 | Static permissions justified | Justification below |
 
 ### App ID options
+
+The owner chose `org.unicorntearsproject.UStu` (2026-10-08; see the
+[roadmap](#distribution-roadmap)). The options weighed before:
 
 | ID | Needs | Notes |
 |---|---|---|
