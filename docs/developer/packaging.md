@@ -2,6 +2,33 @@
 
 [Docs home](../README.md) › [Developer docs](README.md) › Packaging
 
+## Distribution roadmap
+
+Owner decisions, 2026-10-08:
+
+| Decision | Value |
+|---|---|
+| Display name | U-Stu Video Editor |
+| Developer name (metainfo `<developer>`, store listings) | Unicorn Tears Project |
+| App ID | `org.unicorntearsproject.UStu`, like all the owner's software under `org.unicorntearsproject.*`. Not renamed yet: it waits for the domain check below |
+| Formats today | Flatpak only, on our download bucket and [software.rustybucket.ai](#release-directories-for-softwarerustybucketai) |
+
+Stores and formats, in order:
+
+1. **Flathub**, once there's a stable release ([Flathub submission](#flathub-submission)). The owner is creating the account.
+2. **Snap Store** ([Snap](#snap)).
+3. **Fedora COPR, AUR, `.deb` and AppImage.** Not scoped yet.
+4. **Windows**, after the port ([ADR-017](../plans/v2/adr/017-windows-secondary-target.md)). macOS isn't a target.
+
+Open:
+
+- **Domain verification** for `org.unicorntearsproject`. Flathub checks a
+  token at `https://unicorntearsproject.org/.well-known/org.flathub.VerifiedApps.txt`,
+  so the owner needs that domain. Being confirmed with the owner.
+- **When 1.0.0 ships.** Flathub takes stable releases only. The
+  [Releases](#releases) section below still names `2.0.0` at M7, from
+  before the pre-1.0 versioning rule; to be settled.
+
 ## Flatpak
 
 The beta Flatpak is built from `packaging/flatpak/com.ustudio.VideoEditor.yml`
@@ -117,7 +144,7 @@ manifest (the app pinned to the tag's commit), the module files, and
 
 | Requirement | State |
 |---|---|
-| App ID on a domain the owner controls, or `io.github.<user>.<repo>` | **Open.** `com.ustudio.*` can't be verified; the options are below |
+| App ID on a domain the owner controls, or `io.github.<user>.<repo>` | **Decided, not applied:** `org.unicorntearsproject.UStu` (owner, 2026-10-08), once the domain is confirmed; renaming touches the places below |
 | Domain verification: token at `https://<domain>/.well-known/org.flathub.VerifiedApps.txt` | Needs the chosen ID; the owner uploads the token |
 | Stable release, `type="stable"` `<release>` entry, tag pushed | Waits for the first stable release |
 | Builds offline from pinned sources (sha256 or commit) | Done: every source is pinned; `just flatpak` builds with no network |
@@ -125,7 +152,7 @@ manifest (the app pinned to the tag's commit), the module files, and
 | Licence files per module in `share/licenses/$FLATPAK_ID` | Done: flatpak-builder installs them, the app's MIT `LICENSE` included |
 | Metainfo `project_license` matches the source | Done: `MIT` (the app). The GPL parts are bundled dependencies with their own licence files |
 | `flatpak-builder-lint` (manifest, repo, appstream) | Not run yet: needs `org.flatpak.Builder` (owner question) |
-| Metainfo: `<developer id=…><name>` | **Open:** needs the developer name and ID |
+| Metainfo: `<developer id=…><name>` | **Decided, not applied:** name "Unicorn Tears Project", id `org.unicorntearsproject`, with the app ID rename |
 | Metainfo: screenshots at a tag or commit URL, window only, ≤ 1000×700, captions without full stops | **Open:** who makes them, and where they're hosted |
 | Metainfo: branding colours | Done: `#FC3CBA` light, `#A04BFA` dark |
 | Metainfo: OARS rating | Done: `oars-1.1`, no content |
@@ -135,6 +162,9 @@ manifest (the app pinned to the tag's commit), the module files, and
 | Static permissions justified | Justification below |
 
 ### App ID options
+
+The owner chose `org.unicorntearsproject.UStu` (2026-10-08; see the
+[roadmap](#distribution-roadmap)). The options weighed before:
 
 | ID | Needs | Notes |
 |---|---|---|
@@ -193,8 +223,49 @@ The owner opens the PR from their account; we prepare the files.
 
 ## Snap
 
-Status: draft `snap/snapcraft.yaml`, not built yet. snapcraft and LXD
-aren't installed (owner question), and the snap name isn't registered.
+Status: draft `snap/snapcraft.yaml`. It builds (`snapcraft pack
+--use-lxd`, snapcraft 9 with LXD 5.21; the build user is in the `lxd`
+group) and passes the clean check, but it isn't published, the snap name
+isn't registered, and the smoke test is parked (below). The core app
+only, as in the Flatpak: `-Ddropin_effects=disabled` (ADR-014) and GPU
+acceleration off by default; the titles and effects drop-ins have no
+snap yet.
+
+What the first builds needed (2026-10-08):
+
+- **MLT's `.pc` files.** MLT's CMake writes absolute `libdir` and
+  `includedir`, and staging rewrites only `prefix=`. The mlt part's
+  `override-stage` points `libdir` and `includedir` at the stage and
+  keeps `prefix=/usr`, so the module directory the app bakes in is the
+  path the layout binds at run time.
+- **Build paths.** `tools/check_bundle_clean.py` (the app part's
+  `override-prime`) refused the stage path in a RUNPATH string meson
+  leaves in `.dynstr`, `__FILE__` paths, and FFmpeg's and x264's headers
+  and `.pc` files. The app part runs meson itself with the SDK and stage
+  library directories on `LIBRARY_PATH` (no build RUNPATH is made) and
+  `-ffile-prefix-map`; MLT gets `-ffile-prefix-map`; build-only files
+  aren't primed.
+- **Headless runs.** The gnome extension's `desktop-launch` exports
+  `GDK_BACKEND=wayland` whenever the desktop's `wayland-0` socket exists,
+  over the caller's `x11`. The smoke harness sets `DISABLE_WAYLAND=1`, the
+  launcher's opt-out, so a snap under test stays on the private Xvfb.
+- **Launching under test.** snap-confine wants the app in a
+  `snap.<name>.<app>-*.scope` cgroup, which `snap run` asks systemd for
+  over the session bus. On the test's private bus that fails, and from a
+  shell inside another snap's scope (a VS Code terminal) snap-confine then
+  refuses to start. `drive.py` launches the snap through `systemd-run
+  --user --scope --unit=snap.<name>.<name>-….scope`, which reaches the
+  user manager without the session bus and keeps the test's environment.
+
+**Open: the snap smoke test is parked** (2026-10-08). With the scope
+launch the app starts on the private Xvfb, and the package, module and
+no-Qt checks pass (8 of 24). It can't reach the test's private D-Bus: the
+bus socket is in `/tmp`, and a snap has its own `/tmp`, so GTK logs
+"Unable to acquire session bus", AT-SPI is gone and the driven checks
+fail (16). The fix is a private bus the snap can see: a listen address
+outside `/tmp` (a directory under `$XDG_RUNTIME_DIR`, not the runtime dir
+itself) for the bus and the activation runtime dir, for the snap runner
+only. Until then a snap gets no functional smoke result.
 
 - `core24` with the `gnome` extension (GNOME 46: GTK 4.14 and
   libadwaita 1.5, the newest the app's symbols need), strict

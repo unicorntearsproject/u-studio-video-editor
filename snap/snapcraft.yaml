@@ -7,8 +7,8 @@
 # no base snap has an H.264 encoder. Only the MLT modules the app requests
 # are built; every Qt one is off (ADR-007).
 #
-# DRAFT: not built yet (snapcraft and LXD aren't installed on the build
-# machine), and the snap name isn't registered. See packaging.md.
+# DRAFT: builds (snapcraft pack --use-lxd, 2026-10-08) but isn't published,
+# and the snap name isn't registered. See packaging.md.
 # Still to add, to match the Flatpak (ADR-019, GPU compositing; stage G5): Eigen
 # (build only) and movit 1.7.2 parts before mlt, and -DMOD_MOVIT=ON
 # (packaging/flatpak/modules/{eigen,movit}.yml), the MLT movit.convert leak
@@ -64,6 +64,10 @@ parts:
     source-commit: b35605ace3ddf7c1a5d67a2eb553f034aef41d55 # same as packaging/flatpak/modules/x264.yml
     autotools-configure-parameters: [--prefix=/usr, --enable-shared, --enable-pic, --disable-cli]
     build-packages: [nasm]
+    prime: &build-only-out # headers, .pc files (they name the stage) and static libraries: build time only
+      - -usr/include
+      - -usr/lib/pkgconfig
+      - -usr/lib/*.a
 
   ffmpeg:
     after: [x264]
@@ -85,6 +89,7 @@ parts:
       - --enable-vaapi
     build-packages: [nasm, libdav1d-dev, libva-dev]
     stage-packages: [libdav1d7, libva2, libva-drm2, libva-x11-2]
+    prime: *build-only-out
 
   mlt:
     after: [ffmpeg]
@@ -136,22 +141,59 @@ parts:
       - -DMOD_XINE=ON # the loader's deinterlace normaliser (see packaging/flatpak/modules/mlt.yml)
     build-packages: [libsdl2-dev, libsamplerate0-dev, libasound2-dev, libpulse-dev]
     stage-packages: [libsdl2-2.0-0, libsamplerate0]
+    # MLT's asserts and log calls keep __FILE__: the build path (/root/parts/...)
+    # would ship, and check_bundle_clean refuses it.
+    build-environment:
+      - CFLAGS: "${CFLAGS:-} -ffile-prefix-map=$CRAFT_PART_SRC=mlt"
+      - CXXFLAGS: "${CXXFLAGS:-} -ffile-prefix-map=$CRAFT_PART_SRC=mlt"
+    # MLT's CMake writes absolute libdir and includedir (/usr/...) into its
+    # .pc files, and staging rewrites only prefix=, to the stage: the app
+    # then looked for <mlt++/Mlt.h> in the build machine's /usr and baked
+    # the stage path in as MLT's module directory (both seen in the first
+    # build, 2026-10-08). Headers and libraries come from the stage;
+    # prefix stays /usr, so moduledir is the path the layout binds at run
+    # time.
+    override-stage: |
+      craftctl default
+      for pc in "$CRAFT_STAGE"/usr/lib/x86_64-linux-gnu/pkgconfig/mlt*-7.pc; do
+        sed -i -e "s|^prefix=.*|prefix=/usr|" \
+          -e "s|^libdir=.*|libdir=$CRAFT_STAGE/usr/lib/x86_64-linux-gnu|" \
+          -e "s|^includedir=.*|includedir=$CRAFT_STAGE/usr/include|" "$pc"
+      done
     prime:
       - -usr/bin # melt: not needed at run time
+      - -usr/include # build-time only, and the .pc files name the stage
+      - -usr/lib/x86_64-linux-gnu/pkgconfig
 
   u-studio-video-editor:
     after: [mlt]
     plugin: meson
     source: .
-    meson-parameters:
-      - --prefix=/usr
-      - -Dbuildtype=release
-      - -Dtests=disabled
-      - -Drender_tool=true
+    # override-build runs meson itself (below). As in the Flatpak's app: the
+    # effects drop-in (on by default) stays out of the core (ADR-014), and
+    # GPU acceleration starts off (and movit isn't in this snap yet).
+    meson-parameters: []
     build-packages: [g++, libxml2-dev]
     override-pull: |
       craftctl default
       craftctl set version="$(sed -n "s/^  version: '\(.*\)',$/\1/p" meson.build)"
+    # The meson plugin's steps, run here so the environment can change.
+    # Meson gives a build RUNPATH to every library directory it doesn't count
+    # as the compiler's own (here the SDK's and the stage's), and its install
+    # drops the RUNPATH entry but leaves the string in .dynstr, so the stage
+    # path would ship (check_bundle_clean refuses it; first build,
+    # 2026-10-08). On LIBRARY_PATH they count as the compiler's, and no
+    # RUNPATH is made. -ffile-prefix-map keeps the build path out of
+    # __FILE__.
+    override-build: |
+      export LIBRARY_PATH="/snap/gnome-46-2404-sdk/current/usr/lib/x86_64-linux-gnu:$CRAFT_STAGE/usr/lib/x86_64-linux-gnu${LIBRARY_PATH:+:$LIBRARY_PATH}"
+      export CFLAGS="${CFLAGS:-} -ffile-prefix-map=$CRAFT_PART_SRC=u-studio"
+      export CXXFLAGS="${CXXFLAGS:-} -ffile-prefix-map=$CRAFT_PART_SRC=u-studio"
+      rm -rf "$CRAFT_PART_BUILD/meson" # a stale configuration keeps the old flags
+      meson setup "$CRAFT_PART_BUILD/meson" "$CRAFT_PART_SRC" --prefix=/usr -Dbuildtype=release \
+        -Dtests=disabled -Drender_tool=true -Dgpu_acceleration_default=off -Ddropin_effects=disabled
+      ninja -C "$CRAFT_PART_BUILD/meson"
+      DESTDIR="$CRAFT_PART_INSTALL" meson install -C "$CRAFT_PART_BUILD/meson" --no-rebuild
     override-prime: |
       craftctl default
       # Nothing from a test run or the build machine may ship.

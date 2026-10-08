@@ -182,7 +182,15 @@ def launch(env_args):
                   [f"--env={p}" for p in pairs + ["USTUDIO_LOG_LEVEL=debug", "GDK_BACKEND=x11", "GTK_A11Y=atspi"]] + \
                   [APP_ID]
     else:
-        command = ["snap", "run", SNAP_NAME]
+        # snap-confine wants the app in a snap.<name>.<app>-*.scope cgroup.
+        # `snap run` asks systemd for one over the session bus, which is this
+        # test's private bus, where that fails; from a shell inside another
+        # snap's scope (a VS Code terminal) snap-confine then refuses to start
+        # (2026-10-08). systemd-run reaches the user manager through
+        # $XDG_RUNTIME_DIR/systemd/private and keeps this environment.
+        command = ["systemd-run", "--user", "--scope", "--quiet",
+                   f"--unit=snap.{SNAP_NAME}.{SNAP_NAME}-{os.getpid()}-{int(time.time())}.scope",
+                   "--", "snap", "run", SNAP_NAME]
         env.update(dict(p.split("=", 1) for p in pairs))
     subprocess.Popen(command, env=env, stdout=open(os.path.join(OUT, "app.log"), "a"), stderr=subprocess.STDOUT,
                      stdin=subprocess.DEVNULL, start_new_session=True)

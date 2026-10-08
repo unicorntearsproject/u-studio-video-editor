@@ -74,7 +74,11 @@ DOC_BEFORE=$(findmnt -n -o SOURCE,FSTYPE "$REAL_RUNTIME/doc" 2>/dev/null || echo
 # env -i: the caller's environment may point XDG_DATA_HOME and GTK/GIO
 # module paths elsewhere (a VS Code snap terminal does), which would move
 # `flatpak --user` to another installation and break GTK in the test.
-env -i HOME="$RUN_HOME" USER="$USER" PATH=/usr/local/bin:/usr/bin:/bin:/snap/bin LANG=C.UTF-8 \
+# DISABLE_WAYLAND: a snap's desktop-launch (the gnome extension's) exports
+# GDK_BACKEND=wayland whenever $XDG_RUNTIME_DIR/../wayland-0 exists, over
+# our GDK_BACKEND=x11, which would put the app on the desktop's own
+# compositor (read in gnome-46-2404's command-chain, 2026-10-08).
+env -i HOME="$RUN_HOME" USER="$USER" PATH=/usr/local/bin:/usr/bin:/bin:/snap/bin LANG=C.UTF-8 DISABLE_WAYLAND=1 \
     XDG_RUNTIME_DIR="$REAL_RUNTIME" SMOKE_RUNTIME="$RUNTIME" GIO_USE_VFS=local \
     FLATPAK_USER_DIR="$FLATPAK_DIR" \
     XDG_DATA_DIRS="$FLATPAK_DIR/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share" \
