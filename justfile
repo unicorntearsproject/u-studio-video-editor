@@ -209,37 +209,26 @@ publish artifact:
         "s3://{{publish_bucket}}/$latest.sha256"
     echo "published: $name, $latest (+ .sha256), sha256 $sum"
 
-# A release directory for another distributor's site (owner, 2026-10-08:
-# software.rustybucket.ai), from the app and add-on bundles `just dist` put
-# in the distribution folder: renamed copies <product>-<version>-<platform>
-# .flatpak, SHA256SUMS over them, and SHA256SUMS.asc when USTUDIO_SIGNING_KEY
-# names the product's OpenPGP key (the owner's; nothing here picks one).
-# Lands in <dist folder>/releases/<version>/ and never touches an existing
-# one. Every copy must match its .sha256 sidecar first.
-# A signed release directory for another site, from the dist folder's bundles.
+# The release's corresponding source (the Flatpaks bundle GPL code: FFmpeg
+# with x264, frei0r, MLT): this repository at HEAD plus every upstream
+# source the manifests build, from build-flatpak/state, so run it after
+# `just flatpak`, `flatpak-titles` and `flatpak-effects`. Written to
+# build-flatpak/u-studio-video-editor-<version>-source.tar.gz and copied to
+# the dist folder with its .sha256 (`just publish` uploads it like a bundle).
+# The release's GPL corresponding-source archive (after the three builds).
+source-archive:
+    python3 tools/source_archive.py {{version}} "$(git rev-parse HEAD)" build-flatpak/state \
+        build-flatpak/u-studio-video-editor-{{version}}-source.tar.gz
+    just dist build-flatpak/u-studio-video-editor-{{version}}-source.tar.gz
+
+# A release directory for software.rustybucket.ai (owner, 2026-10-08), to RBA
+# Infra's spec: tools/release_dir.py has the details. From the bundles and
+# the source archive `just dist` copied; signed when USTUDIO_SIGNING_KEY
+# names the product key (the owner's; nothing here picks one). Never
+# rewrites an existing releases/<version>/.
+# The signed release directory for software.rustybucket.ai.
 release-dir version:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    src="{{dist_dir}}"; out="$src/releases/{{version}}"; platform=linux-x86_64
-    if [ -e "$out" ]; then echo "release-dir: $out exists; a published release is never rewritten" >&2; exit 1; fi
-    names=(u-studio-video-editor u-studio-video-editor-dropin-titles u-studio-video-editor-dropin-effects)
-    for n in "${names[@]}"; do
-        f="$src/$n-{{version}}.flatpak"
-        [ -f "$f" ] && [ -f "$f.sha256" ] || { echo "release-dir: $f or its .sha256 is missing (just dist first)" >&2; exit 1; }
-        [ "$(sha256sum "$f" | cut -d' ' -f1)" = "$(cut -d' ' -f1 "$f.sha256")" ] || { echo "release-dir: $f doesn't match its .sha256" >&2; exit 1; }
-    done
-    mkdir -p "$out"
-    for n in "${names[@]}"; do
-        cp --no-clobber "$src/$n-{{version}}.flatpak" "$out/$n-{{version}}-$platform.flatpak"
-    done
-    (cd "$out" && sha256sum -- *.flatpak > SHA256SUMS && sha256sum -c --quiet SHA256SUMS)
-    if [ -n "${USTUDIO_SIGNING_KEY:-}" ]; then
-        gpg --batch --armor --detach-sign --local-user "$USTUDIO_SIGNING_KEY" --output "$out/SHA256SUMS.asc" "$out/SHA256SUMS"
-        gpg --verify "$out/SHA256SUMS.asc" "$out/SHA256SUMS"
-    else
-        echo "release-dir: unsigned (set USTUDIO_SIGNING_KEY to the product key's fingerprint for SHA256SUMS.asc)"
-    fi
-    echo "release-dir: $out"; ls -l "$out"
+    python3 tools/release_dir.py {{version}} "{{dist_dir}}" ${USTUDIO_SIGNING_KEY:+--key "$USTUDIO_SIGNING_KEY"}
 
 # Drop-in configurations (ADR-013/014, doc 15 "Gating"): the full suite with
 # every drop-in built in, or every one as a loadable module (each in its own
