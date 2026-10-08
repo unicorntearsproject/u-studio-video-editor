@@ -9,7 +9,9 @@
 //   g++ -std=c++23 -DFORMAT=<n> -I<tree>/src -I<tree>/b/src this.cpp \
 //       <tree>/b/src/core/libustudio_core.a $(pkg-config --cflags --libs libxml-2.0)
 // and run it with the output path. A new format version adds its fixture
-// the same way, from the last commit that writes it.
+// the same way, from the last commit that writes it. The writer records the
+// folder it saved to as root="..."; set that to "/home/user/Videos" in the
+// committed file so no real home folder ships in the repo.
 // Writes a representative project with this era's own writer (FORMAT 3, 5 or 6).
 #include "core/model/model.h"
 #include "core/xml/writer.h"
