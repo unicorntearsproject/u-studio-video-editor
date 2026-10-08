@@ -123,6 +123,16 @@ Cairo 1.18, fontconfig 2.17):
   session and `GTK_A11Y=atspi`. Pass `DISPLAY`, `GDK_BACKEND=x11` and
   `GDK_DEBUG=no-portals` into that session, so the dialog is the app's own
   and nothing opens on the real desktop.
+- **A window's "destroy" comes after its widgets are gone.** GtkWindow's
+  dispose unparents its child first, so by the time `gtk_widget_dispose`
+  emits "destroy" every widget the window alone held (the play button, the
+  time label) is finalized; only the parts' roots, which take their own
+  reference, survive. `~TitlesWindow` runs from that signal, so it may
+  touch nothing but those roots: it called `stopPlaying()`, which set the
+  freed play button's icon, and closing while playing crashed (2026-10-08;
+  a weak reference on the button fires before the destructor). ASan
+  doesn't see it, because the read is in uninstrumented libgobject; meson's
+  `MALLOC_PERTURB_` turns it into a crash every time (`titles-window`).
 
 ## T2d: exporting a title on its own
 

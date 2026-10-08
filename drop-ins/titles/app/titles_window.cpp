@@ -175,7 +175,12 @@ TitlesWindow::~TitlesWindow()
     // window may call back into this object after it (the text editor's
     // focus-leave, the banner, the play button; the parts do their own).
     disconnectFromTree(GTK_WIDGET(m_window), this);
-    stopPlaying();
+    // Not stopPlaying(): the window's dispose has already freed the play
+    // button and the inspector's rows (a crash when closed while playing,
+    // 2026-10-08). The canvas holds its own reference to its widget.
+    if (m_playTick)
+        gtk_widget_remove_tick_callback(m_canvas->widget(), m_playTick);
+    m_playTick = 0;
     g_cancellable_cancel(m_cancellable);
     g_object_unref(m_cancellable);
     if (m_finishIdle)

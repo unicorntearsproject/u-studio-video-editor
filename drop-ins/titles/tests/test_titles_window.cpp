@@ -123,6 +123,50 @@ TEST_CASE("closing the designer with a layer selected doesn't call into the clos
 
 namespace {
 
+// The transport's Play button: the button showing the play icon.
+GtkWidget *findPlayButton(GtkWidget *widget)
+{
+    if (GTK_IS_BUTTON(widget)) {
+        const char *icon = gtk_button_get_icon_name(GTK_BUTTON(widget));
+        if (icon && std::string(icon) == "media-playback-start-symbolic")
+            return widget;
+    }
+    for (GtkWidget *child = gtk_widget_get_first_child(widget); child; child = gtk_widget_get_next_sibling(child))
+        if (GtkWidget *found = findPlayButton(child))
+            return found;
+    return nullptr;
+}
+
+} // namespace
+
+TEST_CASE("closing the designer while it plays doesn't touch the freed transport (2026-10-08)")
+{
+    // ~TitlesWindow stopped playback through stopPlaying(), which set the
+    // play button's icon after the window's dispose had freed it: a SIGSEGV
+    // whenever a play tick was still running at close. meson's
+    // MALLOC_PERTURB_ makes it a crash every time; ASan misses it (the read
+    // is in libgobject, which isn't instrumented).
+    if (!haveGtk())
+        return;
+    const std::string path = twoLayerTitle();
+    auto *window = new app::TitlesWindow(application(), path, {});
+    GtkWindow *gtkWindow = window->window();
+    gtk_window_present(gtkWindow);
+    settle();
+    GtkWidget *play = findPlayButton(GTK_WIDGET(gtkWindow));
+    REQUIRE(play != nullptr);
+    g_signal_emit_by_name(play, "clicked");
+    settle();
+    CHECK(std::string(gtk_button_get_icon_name(GTK_BUTTON(play))) == "media-playback-pause-symbolic");
+    g_object_add_weak_pointer(G_OBJECT(gtkWindow), reinterpret_cast<gpointer *>(&gtkWindow));
+    gtk_window_destroy(gtkWindow);
+    settle();
+    CHECK(gtkWindow == nullptr);
+    fs::remove_all(scratch());
+}
+
+namespace {
+
 void collect(GtkWidget *widget, std::vector<GtkWidget *> &out)
 {
     out.push_back(widget);

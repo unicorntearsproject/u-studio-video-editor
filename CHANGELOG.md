@@ -4,6 +4,9 @@ All notable user-facing changes to this project are documented here.
 Format: newest first, one line per change. Internal refactors, tests, and
 docs-only changes are not listed (CLAUDE.md).
 
+## 0.81.1-beta.1
+- U Stu Titles no longer crashes when closed while its preview is playing.
+
 ## 0.81.0-beta.1
 
 - A project that won't open says why (not found, saved by a newer version,
