@@ -14,10 +14,15 @@ them change over time, and undo anything.
 
 ## Opening the Effects pages
 
-Click the round **Inspector** button at the top right of the picture. Two
-pages appear on the right: **Effects** (the effects on what you've
-selected) and **Add** (every effect you can add). On a wide window the
-panel sits beside the picture; on a narrow one it slides over it.
+Click the round **Inspector** button at the top right of the picture, or
+press **F9**. Two pages appear on the right: **Effects** (the effects on
+what you've selected) and **Add** (every effect you can add). On a wide
+window the panel sits beside the picture; on a narrow one it slides over
+it.
+
+To give the space back to the picture, click the panel button at the
+right end of its tabs, or press **F9** again. On a wide window U Stu
+remembers whether the panel was open and opens it the same way next time.
 
 Press **E** to jump straight to **Add**.
 

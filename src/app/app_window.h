@@ -849,6 +849,9 @@ class AppWindow : public ShellHost
     static void zoomInActivated(GSimpleAction *, GVariant *, gpointer userData);
     static void zoomOutActivated(GSimpleAction *, GVariant *, gpointer userData);
     static void zoomFitActivated(GSimpleAction *, GVariant *, gpointer userData);
+    static void toggleInspectorActivated(GSimpleAction *, GVariant *, gpointer userData);
+    static void onInspectorCollapsedTrampoline(GObject *, GParamSpec *, gpointer userData);
+    static void onInspectorShownTrampoline(GObject *, GParamSpec *, gpointer userData);
     static void timelineClickTrampoline(GtkGestureClick *gesture, int nPress, double x, double y, gpointer userData);
     static void timelineRightClickTrampoline(GtkGestureClick *gesture, int nPress, double x, double y,
                                              gpointer userData);

@@ -67,7 +67,10 @@ void AppWindow::addInspectorPage(const InspectorPage &page)
         // as wide as the default 1100 px window allows (one more button
         // there widened the whole window, 2026-09-25).
         registerHints({{"inspector.toggle", "Inspector", "Show or hide the inspector",
-                        "Pages that drop-ins add: effects, titles, …", nullptr, nullptr}});
+                        "Pages that drop-ins add: effects, titles, …", "toggle-inspector", nullptr},
+                       {"inspector.hide", "Inspector", "Hide the inspector",
+                        "Gives its space back to the picture; the button in the picture's corner brings it back",
+                        "toggle-inspector", nullptr}});
         m_inspectorSplit = ADW_OVERLAY_SPLIT_VIEW(adw_overlay_split_view_new());
         adw_overlay_split_view_set_sidebar_position(m_inspectorSplit, GTK_PACK_END);
         // Floating over the content, hidden until toggled: side by side it
@@ -125,11 +128,52 @@ void AppWindow::addInspectorPage(const InspectorPage &page)
         GtkWidget *switcher = adw_view_switcher_new();
         adw_view_switcher_set_policy(ADW_VIEW_SWITCHER(switcher), ADW_VIEW_SWITCHER_POLICY_NARROW);
         adw_view_switcher_set_stack(ADW_VIEW_SWITCHER(switcher), m_inspectorStack);
-        gtk_box_append(GTK_BOX(sidebar), switcher);
+        gtk_widget_set_hexpand(switcher, TRUE);
+        // The tabs and, at their end, a button that hides the pane: in the
+        // narrow layout the pane covers the corner toggle.
+        GtkWidget *tabs = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+        gtk_widget_add_css_class(tabs, "inspector-tabs");
+        gtk_box_append(GTK_BOX(tabs), switcher);
+        GtkWidget *hide = gtk_button_new_from_icon_name("sidebar-show-right-symbolic");
+        gtk_widget_add_css_class(hide, "flat");
+        gtk_widget_set_valign(hide, GTK_ALIGN_CENTER);
+        gtk_accessible_update_property(GTK_ACCESSIBLE(hide), GTK_ACCESSIBLE_PROPERTY_LABEL, "Hide inspector", -1);
+        gtk_actionable_set_action_name(GTK_ACTIONABLE(hide), "win.toggle-inspector");
+        setTooltip(hide, "inspector.hide");
+        gtk_box_append(GTK_BOX(tabs), hide);
+        gtk_box_append(GTK_BOX(sidebar), tabs);
         gtk_box_append(GTK_BOX(sidebar), GTK_WIDGET(m_inspectorStack));
         adw_overlay_split_view_set_sidebar(m_inspectorSplit, sidebar);
+
+        // Remembered per user when docked (the narrow layout floats over the
+        // picture, so it starts and goes back hidden there).
+        g_signal_connect(m_inspectorSplit, "notify::collapsed", G_CALLBACK(&onInspectorCollapsedTrampoline), this);
+        g_signal_connect(m_inspectorSplit, "notify::show-sidebar", G_CALLBACK(&onInspectorShownTrampoline), this);
     }
     adw_view_stack_add_titled_with_icon(m_inspectorStack, page.widget, page.id, page.title, page.iconName);
+}
+
+void AppWindow::toggleInspectorActivated(GSimpleAction *, GVariant *, gpointer userData)
+{
+    auto *self = static_cast<AppWindow *>(userData);
+    if (!self->m_inspectorSplit)
+        return; // no add-on adds an inspector page
+    adw_overlay_split_view_set_show_sidebar(self->m_inspectorSplit,
+                                            !adw_overlay_split_view_get_show_sidebar(self->m_inspectorSplit));
+}
+
+void AppWindow::onInspectorCollapsedTrampoline(GObject *, GParamSpec *, gpointer userData)
+{
+    auto *self = static_cast<AppWindow *>(userData);
+    const bool docked = !adw_overlay_split_view_get_collapsed(self->m_inspectorSplit);
+    adw_overlay_split_view_set_show_sidebar(self->m_inspectorSplit, docked && self->m_settings->showInspector());
+}
+
+void AppWindow::onInspectorShownTrampoline(GObject *, GParamSpec *, gpointer userData)
+{
+    auto *self = static_cast<AppWindow *>(userData);
+    if (!adw_overlay_split_view_get_collapsed(self->m_inspectorSplit))
+        self->m_settings->setShowInspector(adw_overlay_split_view_get_show_sidebar(self->m_inspectorSplit));
 }
 
 void AppWindow::showInspectorPage(const char *id)

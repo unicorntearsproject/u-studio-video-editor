@@ -14,7 +14,7 @@ saved_lacks() { ! grep -q "$1" "$OUT/smoke.ustudio"; }
 dbus-update-activation-environment XDG_RUNTIME_DIR="$SMOKE_RUNTIME" GIO_USE_VFS=local
 
 exec 3>"$OUT/display"
-Xvfb -displayfd 3 -screen 0 1920x1080x24 -nolisten tcp >"$OUT/xvfb.log" 2>&1 &
+Xvfb -displayfd 3 -screen 0 "${SMOKE_SCREEN:-1920x1080x24}" -nolisten tcp >"$OUT/xvfb.log" 2>&1 &
 XVFB=$!
 for _ in $(seq 1 40); do [ -s "$OUT/display" ] && break; sleep 0.25; done
 export DISPLAY=":$(cat "$OUT/display")"

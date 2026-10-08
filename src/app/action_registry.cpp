@@ -69,6 +69,8 @@ const std::vector<ActionSpec> &actionSpecs()
         {"zoom-in",              "Zoom In",                    "Timeline", {"plus", "equal", "KP_Add"}, &AppWindow::zoomInActivated},
         {"zoom-out",             "Zoom Out",                   "Timeline", {"minus", "KP_Subtract"},   &AppWindow::zoomOutActivated},
         {"zoom-fit",             "Zoom to Fit",                "Timeline", {"0"},                      &AppWindow::zoomFitActivated},
+        // F9: GNOME's key for a side pane (an add-on's inspector pages).
+        {"toggle-inspector",     "Show or Hide the Inspector", "Timeline", {"F9"},                     &AppWindow::toggleInspectorActivated},
 
         // --- Project ---
         {"save",         "Save",              "Project", {"<Control>s"},             &AppWindow::saveActionActivated},
