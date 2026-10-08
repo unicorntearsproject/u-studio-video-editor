@@ -226,7 +226,7 @@ The owner opens the PR from their account; we prepare the files.
 Status: draft `snap/snapcraft.yaml`. It builds (`snapcraft pack
 --use-lxd`, snapcraft 9 with LXD 5.21; the build user is in the `lxd`
 group) and passes the clean check, but it isn't published, the snap name
-isn't registered, and the smoke test hasn't run on it yet. The core app
+isn't registered, and the smoke test is parked (below). The core app
 only, as in the Flatpak: `-Ddropin_effects=disabled` (ADR-014) and GPU
 acceleration off by default; the titles and effects drop-ins have no
 snap yet.
@@ -249,6 +249,23 @@ What the first builds needed (2026-10-08):
   `GDK_BACKEND=wayland` whenever the desktop's `wayland-0` socket exists,
   over the caller's `x11`. The smoke harness sets `DISABLE_WAYLAND=1`, the
   launcher's opt-out, so a snap under test stays on the private Xvfb.
+- **Launching under test.** snap-confine wants the app in a
+  `snap.<name>.<app>-*.scope` cgroup, which `snap run` asks systemd for
+  over the session bus. On the test's private bus that fails, and from a
+  shell inside another snap's scope (a VS Code terminal) snap-confine then
+  refuses to start. `drive.py` launches the snap through `systemd-run
+  --user --scope --unit=snap.<name>.<name>-….scope`, which reaches the
+  user manager without the session bus and keeps the test's environment.
+
+**Open: the snap smoke test is parked** (2026-10-08). With the scope
+launch the app starts on the private Xvfb, and the package, module and
+no-Qt checks pass (8 of 24). It can't reach the test's private D-Bus: the
+bus socket is in `/tmp`, and a snap has its own `/tmp`, so GTK logs
+"Unable to acquire session bus", AT-SPI is gone and the driven checks
+fail (16). The fix is a private bus the snap can see: a listen address
+outside `/tmp` (a directory under `$XDG_RUNTIME_DIR`, not the runtime dir
+itself) for the bus and the activation runtime dir, for the snap runner
+only. Until then a snap gets no functional smoke result.
 
 - `core24` with the `gnome` extension (GNOME 46: GTK 4.14 and
   libadwaita 1.5, the newest the app's symbols need), strict
