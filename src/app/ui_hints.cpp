@@ -24,6 +24,7 @@ std::vector<HintSpec> &registry()
         {"header.new-project",   "Header bar", "New project",           "Starts an empty, untitled project; asks first if there are unsaved changes", "new-project", nullptr},
         {"header.reload",        "Header bar", "Reload project from disk", "Asks first if there are unsaved changes", nullptr, nullptr},
         {"header.open",          "Header bar", "Open project…",         nullptr, "open-project", nullptr},
+        {"window.quit",          "Header bar", "Quit",                  "Closes U Stu, asking first if there are unsaved changes", "quit", nullptr},
         {"header.recent",        "Header bar", "Recent projects",       nullptr, nullptr, nullptr},
         {"header.project-format", "Header bar", "Project name and format", "Click to change the project's frame rate or background colour", "project-frame-rate", nullptr},
         {"header.save",          "Header bar", "Save project",          "Saves to the project's own file, keeping its last 5 versions in .ustudio-backups beside it; right-click for Save As", "save", nullptr},

@@ -22,6 +22,7 @@
 #include "core/commands/undo_stack.h"
 #include "core/concurrency/thread_pool.h"
 #include "core/model/model.h"
+#include "core/xml/reader.h"
 #include "engine/dispatcher.h"
 #include "core/audio/align.h"
 #include "engine/engine.h"
@@ -338,8 +339,12 @@ class AppWindow : public ShellHost
     // m_projectLoader; a newer load (or New Project) drops an older one.
     // `adopt` runs on the main thread with the parsed model -- after asking
     // again if the user edited the current project while it parsed.
+    // Every failure is logged (path and reason) before `failed` runs.
     void loadProjectAsync(const std::string &path, std::function<void(core::Model)> adopt,
-                          std::function<void(const std::string &)> failed);
+                          std::function<void(const core::ProjectLoadError &)> failed);
+    // Why a project didn't open, in words that fit the kind (missing, saved
+    // by a newer version, not a U Stu project, ...), with the full reason.
+    void showProjectLoadError(const std::string &path, const core::ProjectLoadError &error);
     // The part of every project swap that's the same: cancels the old
     // project's jobs, swaps the model in, clears undo, resets the engine
     // and the selection. The caller sets the path and the clean point.
@@ -882,6 +887,9 @@ class AppWindow : public ShellHost
     static void saveButtonRightClickTrampoline(GtkGestureClick *gesture, int nPress, double x, double y,
                                                gpointer userData);
     static void openProjectActionActivated(GSimpleAction *action, GVariant *parameter, gpointer userData);
+    // Ctrl+Q: closes the window the normal way (onCloseRequest(): the
+    // unsaved-changes prompt, waiting for a save), which ends the app.
+    static void quitActionActivated(GSimpleAction *action, GVariant *parameter, gpointer userData);
     static void newProjectActionActivated(GSimpleAction *action, GVariant *parameter, gpointer userData);
     static void importActionActivated(GSimpleAction *action, GVariant *parameter, gpointer userData);
     static void importFolderActivated(GSimpleAction *action, GVariant *parameter, gpointer userData);

@@ -242,7 +242,7 @@ AppWindow::AppWindow(GtkApplication *app, const std::vector<dropins::ShellExtens
         // Pool: the parse, then which media files are missing (a stat each;
         // doc 07), so a slow mount never stalls the window.
         [](const std::string &path) {
-            ProjectLoader::Result loaded = core::loadProject(path);
+            ProjectLoader::Result loaded = core::loadProjectFile(path);
             if (loaded)
                 core::markMissingMedia(*loaded);
             return loaded;
@@ -363,6 +363,7 @@ void AppWindow::reopenLastProjectIfWanted(const std::string &path)
         return;
     std::error_code ec;
     if (!std::filesystem::is_regular_file(path, ec)) {
+        Log::warn("[app] the last project isn't there any more: " + path);
         showStatus("The last project isn't there any more: " + path);
         return;
     }
@@ -2432,11 +2433,59 @@ void AppWindow::loadProjectFromPath(const std::string &requestedPath)
             // re-opening it later keeps bumping it back to the top.
             recordRecentProject(path);
         },
-        [this](const std::string &error) { showStatus(error); });
+        [this, path](const core::ProjectLoadError &error) { showProjectLoadError(path, error); });
+}
+
+void AppWindow::showProjectLoadError(const std::string &path, const core::ProjectLoadError &error)
+{
+    using Kind = core::ProjectLoadError::Kind;
+    const std::string name = std::filesystem::path(path).filename().string();
+    std::string heading, body;
+    switch (error.kind) {
+    case Kind::Missing:
+        heading = "Project not found";
+        body = "There's no file at this path any more: it may have been moved, renamed or deleted. Copies from "
+               "earlier saves are kept in the .ustudio-backups folder beside it.";
+        break;
+    case Kind::TooNew:
+        heading = "Saved by a newer U Stu";
+        body = name + " was saved by " +
+               (error.savedBy.empty() ? std::string("a newer version of U Stu Video Editor")
+                                      : "U Stu Video Editor " + error.savedBy) +
+               ". Update this one (" USTUDIO_VERSION ") to open it. It was left as it is.";
+        break;
+    case Kind::TooOld:
+        heading = "Project too old to open";
+        body = name + " uses a project format from before this version's oldest. It was left as it is.";
+        break;
+    case Kind::NotAProject:
+        heading = "Not a U Stu project";
+        body = name + " isn't a project this version of U Stu Video Editor opens. It was left as it is.";
+        break;
+    case Kind::Unreadable:
+        heading = "Can't read the project";
+        body = name + " couldn't be read. It was left as it is.";
+        break;
+    case Kind::Invalid:
+        heading = "The project is damaged";
+        body = name + " was read, but its contents don't fit together. It was left as it is; a copy from an "
+                      "earlier save may be in the .ustudio-backups folder beside it.";
+        break;
+    }
+    showStatus(heading + ": " + path);
+    AdwDialog *dialog = adw_alert_dialog_new(heading.c_str(), body.c_str());
+    GtkWidget *details = gtk_label_new(error.message.c_str());
+    gtk_label_set_selectable(GTK_LABEL(details), TRUE);
+    gtk_label_set_wrap(GTK_LABEL(details), TRUE);
+    gtk_label_set_xalign(GTK_LABEL(details), 0.0f);
+    gtk_widget_add_css_class(details, "dim-label");
+    adw_alert_dialog_set_extra_child(ADW_ALERT_DIALOG(dialog), details);
+    adw_alert_dialog_add_response(ADW_ALERT_DIALOG(dialog), "close", "Close");
+    adw_dialog_present(dialog, GTK_WIDGET(m_window));
 }
 
 void AppWindow::loadProjectAsync(const std::string &path, std::function<void(core::Model)> adopt,
-                                 std::function<void(const std::string &)> failed)
+                                 std::function<void(const core::ProjectLoadError &)> failed)
 {
     if (!m_projectLoader)
         return; // shutting down
@@ -2444,6 +2493,9 @@ void AppWindow::loadProjectAsync(const std::string &path, std::function<void(cor
     m_projectLoader->load(
         path, [this, startState, adopt = std::move(adopt), failed = std::move(failed)](ProjectLoader::Result loaded) {
             if (!loaded) {
+                // Owner P0 (2026-10-08): a project that didn't open left
+                // nothing in the log.
+                Log::warn("[app] couldn't open a project: " + loaded.error().message);
                 failed(loaded.error());
                 return;
             }
@@ -2509,7 +2561,7 @@ void AppWindow::performReload()
             refreshMediaBrowser();
             showStatus("Reloaded: " + path);
         },
-        [this](const std::string &error) { showStatus(error); });
+        [this, path](const core::ProjectLoadError &error) { showProjectLoadError(path, error); });
 }
 
 void AppWindow::onNewProjectClicked()
@@ -5290,12 +5342,12 @@ bool AppWindow::offerRecoveryIfAny()
                         self->m_pendingAutosaveCleanupPath = recoverable.autosavePath;
                         self->m_pendingAutosaveCleanupMetaPath = recoverable.metaPath;
                     },
-                    [self](const std::string &error) {
+                    [self](const core::ProjectLoadError &error) {
                         // Load failed -- leave the autosave files untouched
                         // entirely rather than destroying what may be the
                         // only copy of that work; a later launch gets
                         // another chance to recover them.
-                        self->showStatus("Couldn't recover: " + error);
+                        self->showStatus("Couldn't recover: " + error.message);
                     });
             } else {
                 // An affirmative "no" from the owner (doc 09: "discarded
@@ -5804,6 +5856,11 @@ void AppWindow::saveAsActivated(GSimpleAction *, GVariant *, gpointer userData)
 void AppWindow::openProjectActionActivated(GSimpleAction *, GVariant *, gpointer userData)
 {
     static_cast<AppWindow *>(userData)->onOpenProjectClicked();
+}
+
+void AppWindow::quitActionActivated(GSimpleAction *, GVariant *, gpointer userData)
+{
+    gtk_window_close(GTK_WINDOW(static_cast<AppWindow *>(userData)->m_window));
 }
 
 void AppWindow::newProjectActionActivated(GSimpleAction *, GVariant *, gpointer userData)

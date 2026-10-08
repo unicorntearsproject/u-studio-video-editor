@@ -61,6 +61,23 @@ The media file has moved. Click **Relink…** in the banner
 Start it again and accept the recovery offer. At most about two minutes of
 work is lost ([Autosave](projects-and-saving.md#autosave-and-crash-recovery)).
 
+### A project won't open
+
+A message says why, and the project file is left as it is:
+
+- **Project not found**: the file was moved, renamed or deleted. Copies from
+  each of your last five saves are kept in the hidden `.ustudio-backups`
+  folder beside the project; copy the newest one back to the project's name
+  and open it.
+- **Saved by a newer U Stu**: a newer version of the editor saved it. Update
+  this one (the message names the version you need).
+- **Not a U Stu project**: the file isn't a project this version opens. That
+  includes projects from the very first prototype editor.
+- **The project is damaged**: its contents don't fit together. Try the newest
+  copy in `.ustudio-backups`, and report it (see above), attaching the file.
+
+The reason is also written to the log.
+
 ### A drop or move is refused
 
 Red while dragging means the edit isn't allowed: the clip would overlap
