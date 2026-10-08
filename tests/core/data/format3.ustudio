@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mlt LC_NUMERIC="C" producer="main_bin" root="/tmp/claude-1000/-home-jj-Repos-u-studio-video-editor/67f59e0c-9ccd-4eb1-9d39-633f36c62e9a/scratchpad/fixtures">
+  <profile description="ustudio" width="1920" height="1080" frame_rate_num="30" frame_rate_den="1" sample_aspect_num="1" sample_aspect_den="1" display_aspect_num="16" display_aspect_den="9" progressive="1" colorspace="709"/>
+  <playlist id="main_bin">
+    <entry producer="asset4" in="0" out="99999"/>
+    <entry producer="asset5" in="0" out="99999"/>
+    <entry producer="asset6" in="0" out="99999"/>
+  </playlist>
+  <producer id="asset4" in="0" out="99999">
+    <property name="resource">color:red</property>
+    <property name="ustudio:asset_id">4</property>
+    <property name="ustudio:display_name">color:red</property>
+    <property name="ustudio:folder"></property>
+    <property name="ustudio:fingerprint"></property>
+    <property name="ustudio:proxy"></property>
+    <property name="ustudio:status">0</property>
+    <property name="ustudio:has_video">1</property>
+    <property name="ustudio:has_audio">0</property>
+    <property name="ustudio:width">0</property>
+    <property name="ustudio:height">0</property>
+    <property name="ustudio:fps_num">1</property>
+    <property name="ustudio:fps_den">1</property>
+    <property name="ustudio:sar_num">1</property>
+    <property name="ustudio:sar_den">1</property>
+    <property name="ustudio:audio_channels">0</property>
+    <property name="ustudio:sample_rate">0</property>
+    <property name="ustudio:native_duration">0</property>
+    <property name="ustudio:video_codec"></property>
+    <property name="ustudio:audio_codec"></property>
+    <property name="ustudio:container"></property>
+    <property name="ustudio:is_image_sequence">0</property>
+    <property name="ustudio:is_still_image">0</property>
+    <property name="ustudio:length_in_sequence_frames">100000</property>
+  </producer>
+  <producer id="asset5" in="0" out="99999">
+    <property name="resource">color:blue</property>
+    <property name="ustudio:asset_id">5</property>
+    <property name="ustudio:display_name">color:blue</property>
+    <property name="ustudio:folder"></property>
+    <property name="ustudio:fingerprint"></property>
+    <property name="ustudio:proxy"></property>
+    <property name="ustudio:status">0</property>
+    <property name="ustudio:has_video">1</property>
+    <property name="ustudio:has_audio">0</property>
+    <property name="ustudio:width">0</property>
+    <property name="ustudio:height">0</property>
+    <property name="ustudio:fps_num">1</property>
+    <property name="ustudio:fps_den">1</property>
+    <property name="ustudio:sar_num">1</property>
+    <property name="ustudio:sar_den">1</property>
+    <property name="ustudio:audio_channels">0</property>
+    <property name="ustudio:sample_rate">0</property>
+    <property name="ustudio:native_duration">0</property>
+    <property name="ustudio:video_codec"></property>
+    <property name="ustudio:audio_codec"></property>
+    <property name="ustudio:container"></property>
+    <property name="ustudio:is_image_sequence">0</property>
+    <property name="ustudio:is_still_image">0</property>
+    <property name="ustudio:length_in_sequence_frames">100000</property>
+  </producer>
+  <producer id="asset6" in="0" out="99999">
+    <property name="resource">tone:</property>
+    <property name="ustudio:asset_id">6</property>
+    <property name="ustudio:display_name">tone:</property>
+    <property name="ustudio:folder"></property>
+    <property name="ustudio:fingerprint"></property>
+    <property name="ustudio:proxy"></property>
+    <property name="ustudio:status">0</property>
+    <property name="ustudio:has_video">0</property>
+    <property name="ustudio:has_audio">1</property>
+    <property name="ustudio:width">0</property>
+    <property name="ustudio:height">0</property>
+    <property name="ustudio:fps_num">1</property>
+    <property name="ustudio:fps_den">1</property>
+    <property name="ustudio:sar_num">1</property>
+    <property name="ustudio:sar_den">1</property>
+    <property name="ustudio:audio_channels">0</property>
+    <property name="ustudio:sample_rate">0</property>
+    <property name="ustudio:native_duration">0</property>
+    <property name="ustudio:video_codec"></property>
+    <property name="ustudio:audio_codec"></property>
+    <property name="ustudio:container"></property>
+    <property name="ustudio:is_image_sequence">0</property>
+    <property name="ustudio:is_still_image">0</property>
+    <property name="ustudio:length_in_sequence_frames">100000</property>
+  </producer>
+  <playlist id="track_3">
+    <property name="ustudio:track_id">3</property>
+    <property name="ustudio:visual_index">1</property>
+    <property name="ustudio:kind">audio</property>
+    <property name="ustudio:name">A1</property>
+    <property name="ustudio:muted">0</property>
+    <property name="ustudio:hidden">0</property>
+    <property name="ustudio:locked">0</property>
+    <property name="ustudio:volume">0.5</property>
+    <entry producer="asset6" in="0" out="89">
+      <property name="ustudio:clip_id">9</property>
+      <property name="ustudio:position">0</property>
+      <property name="ustudio:name">tone:</property>
+      <property name="ustudio:speed">1</property>
+      <property name="ustudio:video_enabled">0</property>
+      <property name="ustudio:audio_enabled">1</property>
+    </entry>
+  </playlist>
+  <playlist id="track_2">
+    <property name="ustudio:track_id">2</property>
+    <property name="ustudio:visual_index">0</property>
+    <property name="ustudio:kind">video</property>
+    <property name="ustudio:name">V1</property>
+    <property name="ustudio:muted">0</property>
+    <property name="ustudio:hidden">0</property>
+    <property name="ustudio:locked">0</property>
+    <property name="ustudio:volume">1</property>
+    <entry producer="asset4" in="0" out="64">
+      <property name="ustudio:clip_id">7</property>
+      <property name="ustudio:position">0</property>
+      <property name="ustudio:name">color:red</property>
+      <property name="ustudio:speed">1</property>
+      <property name="ustudio:video_enabled">1</property>
+      <property name="ustudio:audio_enabled">1</property>
+    </entry>
+    <entry producer="asset5" in="15" out="99">
+      <property name="ustudio:clip_id">8</property>
+      <property name="ustudio:position">55</property>
+      <property name="ustudio:name">color:blue</property>
+      <property name="ustudio:speed">1</property>
+      <property name="ustudio:video_enabled">1</property>
+      <property name="ustudio:audio_enabled">1</property>
+    </entry>
+  </playlist>
+  <producer id="black" in="0" out="139">
+    <property name="resource">color:black</property>
+  </producer>
+  <tractor id="seq1" in="0" out="139">
+    <property name="ustudio:format_version">3</property>
+    <property name="ustudio:sequence_id">1</property>
+    <property name="ustudio:sequence_name">Sequence 1</property>
+    <property name="ustudio:active_sequence">1</property>
+    <property name="ustudio:next_id">11</property>
+    <property name="ustudio:mlt_profile_name"></property>
+    <property name="ustudio:markers">[]</property>
+    <property name="ustudio:settings">{}</property>
+    <track producer="black"/>
+    <track producer="track_3"/>
+    <track producer="track_2"/>
+    <transition>
+      <property name="mlt_service">composite</property>
+      <property name="a_track">0</property>
+      <property name="b_track">1</property>
+    </transition>
+    <transition>
+      <property name="mlt_service">mix</property>
+      <property name="a_track">0</property>
+      <property name="b_track">1</property>
+      <property name="start">1</property>
+      <property name="sum">1</property>
+      <property name="always_active">1</property>
+    </transition>
+    <transition>
+      <property name="mlt_service">composite</property>
+      <property name="a_track">1</property>
+      <property name="b_track">2</property>
+    </transition>
+    <transition>
+      <property name="mlt_service">mix</property>
+      <property name="a_track">1</property>
+      <property name="b_track">2</property>
+      <property name="start">1</property>
+      <property name="sum">1</property>
+      <property name="always_active">1</property>
+    </transition>
+    <transition>
+      <property name="ustudio:transition_id">10</property>
+      <property name="ustudio:transition_track">2</property>
+      <property name="ustudio:transition_a">7</property>
+      <property name="ustudio:transition_b">8</property>
+      <property name="ustudio:transition_extend_a">5</property>
+      <property name="ustudio:transition_extend_b">5</property>
+      <property name="ustudio:transition_service">luma</property>
+    </transition>
+  </tractor>
+</mlt>

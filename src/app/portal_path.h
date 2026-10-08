@@ -29,5 +29,9 @@ namespace ustudio::app::portal {
 // which only the chooser backend may call, so it couldn't be reproduced
 // directly.
 std::string resolveHostPath(const std::string &path, bool createIfMissing = false);
+// The same, against the portal mounted at `portalRoot` ("<dir>/doc/"):
+// tests ask the portal where it is (a private one, under the headless test
+// wrapper, isn't at $XDG_RUNTIME_DIR/doc).
+std::string resolveHostPath(const std::string &path, bool createIfMissing, const std::string &portalRoot);
 
 } // namespace ustudio::app::portal

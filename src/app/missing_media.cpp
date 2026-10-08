@@ -8,6 +8,9 @@
 #include "app_window.h"
 
 #include "core/media/image_sequence.h"
+#include "core/media/media_search.h"
+#include "core/media/missing_media.h"
+#include "platform/files.h"
 
 #include "core/commands/composite_command.h"
 #include "core/commands/primitives.h"
@@ -17,6 +20,7 @@
 #include "engine/dispatcher.h"
 
 #include <algorithm>
+#include <chrono>
 #include <filesystem>
 #include <map>
 #include <set>
@@ -108,31 +112,22 @@ void AppWindow::showRelinkDialog()
     adw_preferences_group_set_description(m_relinkGroup,
                                           "Point each one at where the file is now. Relinking changes nothing else "
                                           "in the project, and undoes in one step.");
+    GtkWidget *buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+    GtkWidget *findAuto = gtk_button_new_with_label("Find Automatically");
+    gtk_widget_add_css_class(findAuto, "flat");
+    setTooltip(findAuto, "relink.find-automatically");
+    g_signal_connect_swapped(
+        findAuto, "clicked",
+        G_CALLBACK(+[](gpointer self) { static_cast<AppWindow *>(self)->findMissingAutomatically(); }), this);
+    gtk_box_append(GTK_BOX(buttons), findAuto);
     GtkWidget *search = gtk_button_new_with_label("Search a Folder…");
     gtk_widget_add_css_class(search, "flat");
     setTooltip(search, "relink.search-folder");
-    g_signal_connect_swapped(search, "clicked", G_CALLBACK(+[](gpointer self) {
-                                 auto *window = static_cast<AppWindow *>(self);
-                                 GtkFileDialog *dialog = gtk_file_dialog_new();
-                                 gtk_file_dialog_set_title(dialog, "Search a Folder for Missing Media");
-                                 gtk_file_dialog_select_folder(
-                                     dialog, GTK_WINDOW(window->m_window), nullptr,
-                                     [](GObject *source, GAsyncResult *result, gpointer data) {
-                                         GFile *folder = gtk_file_dialog_select_folder_finish(GTK_FILE_DIALOG(source),
-                                                                                              result, nullptr);
-                                         if (!folder)
-                                             return;
-                                         char *path = g_file_get_path(folder);
-                                         g_object_unref(folder);
-                                         if (path)
-                                             static_cast<AppWindow *>(data)->searchFolderForMissing(path);
-                                         g_free(path);
-                                     },
-                                     window);
-                                 g_object_unref(dialog);
-                             }),
-                             this);
-    adw_preferences_group_set_header_suffix(m_relinkGroup, search);
+    g_signal_connect_swapped(
+        search, "clicked",
+        G_CALLBACK(+[](gpointer self) { static_cast<AppWindow *>(self)->chooseFolderToSearchForMissing(); }), this);
+    gtk_box_append(GTK_BOX(buttons), search);
+    adw_preferences_group_set_header_suffix(m_relinkGroup, buttons);
     adw_preferences_page_add(page, m_relinkGroup);
 
     GtkWidget *toolbarView = adw_toolbar_view_new();
@@ -190,7 +185,7 @@ void AppWindow::refreshRelinkDialog()
                         char *path = g_file_get_path(file);
                         g_object_unref(file);
                         if (path)
-                            pick->window->relinkTo({{pick->asset, path}});
+                            pick->window->relinkLocated(pick->asset, path);
                         g_free(path);
                     },
                     new Pick{window, picked});
@@ -214,9 +209,8 @@ void AppWindow::searchFolderForMissing(const std::string &folder)
     for (core::AssetId id : missingAssets(false)) {
         const core::Asset &asset = m_model.asset(id);
         // An image sequence is looked for by its first file (M4 E).
-        const std::string file = asset.info.isImageSequence
-                                     ? core::imageSequenceFile(asset.path, asset.info.sequenceBegin)
-                                     : asset.path;
+        const std::string file =
+            asset.info.isImageSequence ? core::imageSequenceFile(asset.path, asset.info.sequenceBegin) : asset.path;
         wanted.push_back({id, fileNameOf(file), asset.fileFingerprint});
     }
     if (wanted.empty())
@@ -254,6 +248,217 @@ void AppWindow::searchFolderForMissing(const std::string &folder)
         });
 }
 
+void AppWindow::chooseFolderToSearchForMissing()
+{
+    GtkFileDialog *dialog = gtk_file_dialog_new();
+    gtk_file_dialog_set_title(dialog, "Search a Folder for Missing Media");
+    gtk_file_dialog_select_folder(
+        dialog, GTK_WINDOW(m_window), nullptr,
+        [](GObject *source, GAsyncResult *result, gpointer data) {
+            GFile *folder = gtk_file_dialog_select_folder_finish(GTK_FILE_DIALOG(source), result, nullptr);
+            if (!folder)
+                return;
+            char *path = g_file_get_path(folder);
+            g_object_unref(folder);
+            if (path)
+                static_cast<AppWindow *>(data)->searchFolderForMissing(path);
+            g_free(path);
+        },
+        this);
+    g_object_unref(dialog);
+}
+
+void AppWindow::offerMissingMediaHelp()
+{
+    const std::vector<core::AssetId> missing = missingAssets(true);
+    if (missing.empty())
+        return;
+    std::string names;
+    for (size_t i = 0; i < missing.size() && i < 4; ++i) {
+        const core::Asset &asset = m_model.asset(missing[i]);
+        names += (i > 0 ? ", " : "") + (asset.displayName.empty() ? fileNameOf(asset.path) : asset.displayName);
+    }
+    if (missing.size() > 4)
+        names += " and " + std::to_string(missing.size() - 4) + " more";
+    const std::string heading =
+        missing.size() == 1 ? "A media file is missing" : std::to_string(missing.size()) + " media files are missing";
+    const std::string body = names + ". " + (missing.size() == 1 ? "Its clips show" : "Their clips show") +
+                             " red until found. Find Automatically looks in the project's folder, where the files "
+                             "were, your Videos, Pictures and Music, your home folder and mounted drives.";
+    AdwDialog *dialog = adw_alert_dialog_new(heading.c_str(), body.c_str());
+    adw_alert_dialog_add_responses(ADW_ALERT_DIALOG(dialog), "later", "Not Now", "locate", "Locate…", "folder",
+                                   "Search a Folder…", "auto", "Find Automatically", nullptr);
+    adw_alert_dialog_set_response_appearance(ADW_ALERT_DIALOG(dialog), "auto", ADW_RESPONSE_SUGGESTED);
+    adw_alert_dialog_set_default_response(ADW_ALERT_DIALOG(dialog), "auto");
+    adw_alert_dialog_set_close_response(ADW_ALERT_DIALOG(dialog), "later");
+    adw_alert_dialog_choose(
+        ADW_ALERT_DIALOG(dialog), GTK_WIDGET(m_window), nullptr,
+        [](GObject *source, GAsyncResult *result, gpointer data) {
+            auto *self = static_cast<AppWindow *>(data);
+            const std::string response = adw_alert_dialog_choose_finish(ADW_ALERT_DIALOG(source), result);
+            if (response == "auto")
+                self->findMissingAutomatically();
+            else if (response == "folder")
+                self->chooseFolderToSearchForMissing();
+            else if (response == "locate")
+                self->showRelinkDialog();
+        },
+        this);
+}
+
+void AppWindow::findMissingAutomatically()
+{
+    if (m_findMissingDialog)
+        return; // already searching
+    std::vector<core::WantedMedia> wanted;
+    core::MediaSearchPlaces places;
+    if (!m_currentProjectPath.empty())
+        places.projectFolder = core::utf8String(core::pathFromUtf8(m_currentProjectPath).parent_path());
+    for (core::AssetId id : missingAssets(false)) {
+        const core::Asset &asset = m_model.asset(id);
+        const std::string file =
+            asset.info.isImageSequence ? core::imageSequenceFile(asset.path, asset.info.sequenceBegin) : asset.path;
+        wanted.push_back({id.value, fileNameOf(file), asset.fileFingerprint});
+        places.missingFolders.push_back(core::utf8String(core::pathFromUtf8(file).parent_path()));
+    }
+    if (wanted.empty())
+        return;
+    for (const core::Asset &asset : m_model.project().bin)
+        if (asset.status != core::Asset::Status::Missing && core::isFileResource(asset.path))
+            places.mediaFolders.push_back(core::utf8String(core::pathFromUtf8(asset.path).parent_path()));
+    for (GUserDirectory kind : {G_USER_DIRECTORY_VIDEOS, G_USER_DIRECTORY_PICTURES, G_USER_DIRECTORY_MUSIC})
+        if (const char *folder = g_get_user_special_dir(kind))
+            places.userFolders.push_back(folder);
+    places.home = g_get_home_dir();
+    for (const std::filesystem::path &mount : platform::mountedVolumeRoots())
+        places.mounts.push_back(core::utf8String(mount));
+    const std::vector<std::string> roots = core::mediaSearchRoots(places);
+
+    // The progress dialog: where it's looking now, and Cancel.
+    m_findMissingCancel = std::make_shared<std::atomic<bool>>(false);
+    m_findMissingDialog = adw_alert_dialog_new("Finding Missing Media", nullptr);
+    m_findMissingLabel = GTK_LABEL(gtk_label_new("Starting…"));
+    gtk_label_set_ellipsize(m_findMissingLabel, PANGO_ELLIPSIZE_MIDDLE);
+    gtk_label_set_width_chars(m_findMissingLabel, 40);
+    gtk_widget_add_css_class(GTK_WIDGET(m_findMissingLabel), "dim-label");
+    adw_alert_dialog_set_extra_child(ADW_ALERT_DIALOG(m_findMissingDialog), GTK_WIDGET(m_findMissingLabel));
+    adw_alert_dialog_add_response(ADW_ALERT_DIALOG(m_findMissingDialog), "cancel", "Cancel");
+    adw_alert_dialog_set_close_response(ADW_ALERT_DIALOG(m_findMissingDialog), "cancel");
+    g_signal_connect(m_findMissingDialog, "closed", G_CALLBACK(+[](AdwDialog *, gpointer data) {
+                         auto *self = static_cast<AppWindow *>(data);
+                         if (self->m_findMissingCancel)
+                             self->m_findMissingCancel->store(true); // closed by Cancel, or by the result
+                         self->m_findMissingDialog = nullptr;
+                         self->m_findMissingLabel = nullptr;
+                     }),
+                     this);
+    adw_dialog_present(m_findMissingDialog, GTK_WIDGET(m_window));
+    showStatus("Finding missing media…");
+
+    const uint64_t generation = m_projectGeneration;
+    const size_t total = wanted.size();
+    m_pool->submit([this, wanted = std::move(wanted), roots, cancel = m_findMissingCancel, generation, total,
+                    token = std::weak_ptr<void>(m_lifetime)](std::stop_token) {
+        auto last = std::chrono::steady_clock::time_point{};
+        const std::map<uint64_t, std::string> found =
+            core::findMediaFiles(wanted, roots, cancel.get(), [&](const core::MediaSearchProgress &progress) {
+                const auto now = std::chrono::steady_clock::now();
+                if (now - last < std::chrono::milliseconds(150))
+                    return;
+                last = now;
+                std::string text =
+                    progress.folder + "\n" + std::to_string(progress.found) + " of " + std::to_string(total) + " found";
+                engine::MainThreadDispatcher::post(token, [this, cancel, text = std::move(text)] {
+                    if (m_findMissingLabel && m_findMissingCancel == cancel)
+                        gtk_label_set_text(m_findMissingLabel, text.c_str());
+                });
+            });
+        const bool cancelled = cancel->load();
+        engine::MainThreadDispatcher::post(token, [this, found, cancel, cancelled, generation, total] {
+            if (m_findMissingDialog && m_findMissingCancel == cancel)
+                adw_dialog_close(m_findMissingDialog);
+            if (generation != m_projectGeneration)
+                return; // another project now
+            if (cancelled && found.empty()) {
+                showStatus("Stopped looking for the missing media.");
+                return;
+            }
+            Log::info("[relink] Find automatically: " + std::to_string(found.size()) + " of " + std::to_string(total) +
+                      " found" + (cancelled ? " (cancelled)" : ""));
+            if (found.empty()) {
+                showStatus("None of the missing files were found. Try Search a Folder or Locate.");
+                return;
+            }
+            std::vector<std::pair<core::AssetId, std::string>> candidates;
+            for (const auto &[id, path] : found)
+                candidates.emplace_back(core::AssetId{id}, path);
+            relinkTo(std::move(candidates));
+        });
+    });
+}
+
+void AppWindow::relinkLocated(core::AssetId asset, const std::string &path)
+{
+    // The others may well be beside it: look in that folder (and below) for
+    // them, and offer them in the same relink.
+    const std::string folder = core::utf8String(core::pathFromUtf8(path).parent_path());
+    std::vector<core::WantedMedia> others;
+    for (core::AssetId id : missingAssets(false)) {
+        if (id == asset)
+            continue;
+        const core::Asset &missing = m_model.asset(id);
+        const std::string file = missing.info.isImageSequence
+                                     ? core::imageSequenceFile(missing.path, missing.info.sequenceBegin)
+                                     : missing.path;
+        others.push_back({id.value, fileNameOf(file), missing.fileFingerprint});
+    }
+    if (others.empty()) {
+        relinkTo({{asset, path}});
+        return;
+    }
+    const uint64_t generation = m_projectGeneration;
+    m_pool->submit([this, asset, path, folder, others = std::move(others), generation,
+                    token = std::weak_ptr<void>(m_lifetime)](std::stop_token) {
+        const std::map<uint64_t, std::string> found = core::findMediaFiles(others, {folder}, nullptr, {}, 200'000);
+        engine::MainThreadDispatcher::post(token, [this, asset, path, folder, found, generation] {
+            if (generation != m_projectGeneration)
+                return;
+            if (found.empty()) {
+                relinkTo({{asset, path}});
+                return;
+            }
+            struct Offer
+            {
+                AppWindow *window;
+                std::vector<std::pair<core::AssetId, std::string>> picked, others;
+            };
+            auto *offer = new Offer{this, {{asset, path}}, {}};
+            for (const auto &[id, other] : found)
+                offer->others.emplace_back(core::AssetId{id}, other);
+            const std::string heading = found.size() == 1
+                                            ? "Another missing file is there"
+                                            : std::to_string(found.size()) + " more missing files are there";
+            const std::string body = "Found in " + folder + ". Relink them too, in the same step?";
+            AdwDialog *dialog = adw_alert_dialog_new(heading.c_str(), body.c_str());
+            adw_alert_dialog_add_responses(ADW_ALERT_DIALOG(dialog), "one", "Just This One", "all", "Relink All",
+                                           nullptr);
+            adw_alert_dialog_set_response_appearance(ADW_ALERT_DIALOG(dialog), "all", ADW_RESPONSE_SUGGESTED);
+            adw_alert_dialog_set_default_response(ADW_ALERT_DIALOG(dialog), "all");
+            adw_alert_dialog_set_close_response(ADW_ALERT_DIALOG(dialog), "one");
+            adw_alert_dialog_choose(
+                ADW_ALERT_DIALOG(dialog), GTK_WIDGET(m_window), nullptr,
+                [](GObject *source, GAsyncResult *result, gpointer data) {
+                    std::unique_ptr<Offer> owned(static_cast<Offer *>(data));
+                    const std::string response = adw_alert_dialog_choose_finish(ADW_ALERT_DIALOG(source), result);
+                    if (response == "all")
+                        owned->picked.insert(owned->picked.end(), owned->others.begin(), owned->others.end());
+                    owned->window->relinkTo(std::move(owned->picked));
+                },
+                offer);
+        });
+    });
+}
+
 void AppWindow::relinkTo(std::vector<std::pair<core::AssetId, std::string>> candidates)
 {
     struct Checked
@@ -274,8 +479,12 @@ void AppWindow::relinkTo(std::vector<std::pair<core::AssetId, std::string>> cand
         std::vector<Checked> checked;
         for (const auto &[id, path] : candidates) {
             if (!sequences.contains(id.value)) {
-                checked.push_back(
-                    {id, path, core::fileFingerprint(path), engine::EngineSync::probeMediaFile(profile, path), {}, false});
+                checked.push_back({id,
+                                   path,
+                                   core::fileFingerprint(path),
+                                   engine::EngineSync::probeMediaFile(profile, path),
+                                   {},
+                                   false});
                 continue;
             }
             // A sequence: any of its files was picked (or its first found).

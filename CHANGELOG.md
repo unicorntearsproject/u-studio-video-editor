@@ -4,6 +4,15 @@ All notable user-facing changes to this project are documented here.
 Format: newest first, one line per change. Internal refactors, tests, and
 docs-only changes are not listed (CLAUDE.md).
 
+## 0.81.0-beta.1
+
+- A project that won't open says why (not found, saved by a newer version,
+  not a U Stu project, damaged), and the reason goes to the log.
+- Opening a project with missing media offers Find Automatically, Search a
+  Folder, Locate or Not Now in one message; Find Automatically looks in the
+  likely places with progress and Cancel.
+- Ctrl+Q quits (asking first if there are unsaved changes).
+
 ## 0.80.2-beta.1
 
 - The editor's number settings (Settings, Render profiles, Edit Transform)

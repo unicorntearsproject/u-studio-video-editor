@@ -648,3 +648,112 @@ TEST_CASE("XML format 7 only where an older build would lose data: transform key
     REQUIRE(loaded.has_value());
     CHECK(loaded->clip(clip).transform.get() == placed);
 }
+
+// doc 09, "Versioning": every format a past U Stu wrote still opens. The
+// fixtures are real files from each format's own writer
+// (data/generate_format_fixture.cpp.txt says how); 6 and 7 also come from
+// today's writer.
+TEST_CASE("XML: every past project format still opens, with its content, and re-saves")
+{
+    for (int version : {3, 4, 5, 6}) {
+        INFO("format " << version);
+        const fs::path fixture = fs::path(TEST_DATA_DIR) / ("format" + std::to_string(version) + ".ustudio");
+        auto loaded = loadProjectFile(fixture.string());
+        REQUIRE(loaded.has_value());
+        const Sequence &seq = loaded->sequence();
+        CHECK(seq.tracks.size() == 2);
+        CHECK(seq.clips.size() == 3);
+        CHECK(seq.transitions.size() == 1);
+        if (version >= 5) {
+            CHECK(seq.markers.size() == 1);
+            bool keyed = false;
+            for (const auto &[id, clip] : seq.clips)
+                for (const Effect &effect : clip.effects)
+                    keyed = keyed || (effect.service == "brightness" && !effect.params.empty() &&
+                                      effect.params.front().keyframes.size() == 2);
+            CHECK(keyed);
+        }
+        if (version == 6) {
+            bool placed = false;
+            for (const auto &[id, clip] : seq.clips)
+                placed = placed || (clip.transform.get().bounds == Transform::Bounds::None &&
+                                    clip.transform.get().rotation.value == 15 && clip.transform.get().flipH);
+            CHECK(placed);
+        }
+        TempProjectFile file("format-resave");
+        REQUIRE(saveProject(*loaded, file.path.string()).empty());
+        auto again = loadProjectFile(file.path.string());
+        REQUIRE(again.has_value());
+        CHECK(again->project() == loaded->project());
+    }
+    CHECK(oldestReadableProjectFormat() == 3);
+    CHECK(newestReadableProjectFormat() == 7);
+}
+
+TEST_CASE("XML: a project that can't open says why, by kind; the version that saved it is recorded")
+{
+    TempProjectFile file("load-errors");
+    Model model = Model::createEmpty();
+    model.insertClip(model.addTrack(Track::Kind::Video, 0, "V1"), addTestAsset(model, "color:red"), 0, 0, 9);
+    REQUIRE(saveProject(model, file.path.string()).empty());
+    std::string text = readFile(file.path);
+    CHECK(text.find("<property name=\"ustudio:saved_by\">" USTUDIO_VERSION "</property>") != std::string::npos);
+
+    // A newer format: refused, naming the version that wrote it.
+    const std::string current = "<property name=\"ustudio:format_version\">6</property>";
+    REQUIRE(text.find(current) != std::string::npos);
+    text.replace(text.find(current), current.size(), "<property name=\"ustudio:format_version\">99</property>");
+    const std::string saver = "<property name=\"ustudio:saved_by\">" USTUDIO_VERSION "</property>";
+    text.replace(text.find(saver), saver.size(), "<property name=\"ustudio:saved_by\">9.1.0</property>");
+    {
+        std::ofstream out(file.path, std::ios::trunc);
+        out << text;
+    }
+    auto newer = loadProjectFile(file.path.string());
+    REQUIRE_FALSE(newer.has_value());
+    CHECK(newer.error().kind == ProjectLoadError::Kind::TooNew);
+    CHECK(newer.error().formatVersion == 99);
+    CHECK(newer.error().savedBy == "9.1.0");
+    CHECK(loadProject(file.path.string()).error().find("saved by 9.1.0") != std::string::npos);
+
+    auto missing = loadProjectFile(file.path.string() + ".gone");
+    REQUIRE_FALSE(missing.has_value());
+    CHECK(missing.error().kind == ProjectLoadError::Kind::Missing);
+
+    // The first prototype's INI projects: named for what they are.
+    {
+        std::ofstream out(file.path, std::ios::trunc);
+        out << "[Project]\nTrackCount=1\n\n[Track0]\nClipCount=0\n";
+    }
+    auto prototype = loadProjectFile(file.path.string());
+    REQUIRE_FALSE(prototype.has_value());
+    CHECK(prototype.error().kind == ProjectLoadError::Kind::NotAProject);
+    CHECK(prototype.error().message.find("prototype") != std::string::npos);
+}
+
+TEST_CASE("XML: an effect from an add-on this build doesn't have is kept, not dropped")
+{
+    TempProjectFile file("unknown-effect");
+    Model model = Model::createEmpty();
+    const ClipId clip =
+        model.insertClip(model.addTrack(Track::Kind::Video, 0, "V1"), addTestAsset(model, "color:red"), 0, 0, 9);
+    Effect fx;
+    fx.service = "acme.glow"; // no such MLT service here
+    Param radius;
+    radius.name = "radius";
+    radius.value = 4.5;
+    Param look;
+    look.name = "look";
+    look.value = std::string("warm");
+    fx.params = {radius, look};
+    model.addEffect(Model::EffectTarget::clip(clip), fx, 0);
+    REQUIRE(saveProject(model, file.path.string()).empty());
+    auto loaded = loadProjectFile(file.path.string());
+    REQUIRE(loaded.has_value());
+    REQUIRE(loaded->clip(clip).effects.size() == 1);
+    CHECK(loaded->clip(clip).effects.front().service == "acme.glow");
+    CHECK(loaded->clip(clip).effects.front().params == fx.params);
+    TempProjectFile again("unknown-effect-2");
+    REQUIRE(saveProject(*loaded, again.path.string()).empty());
+    CHECK(loadProjectFile(again.path.string())->project() == loaded->project());
+}
