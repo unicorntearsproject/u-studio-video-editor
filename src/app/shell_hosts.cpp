@@ -149,6 +149,8 @@ void AppWindow::addInspectorPage(const InspectorPage &page)
         // picture, so it starts and goes back hidden there).
         g_signal_connect(m_inspectorSplit, "notify::collapsed", G_CALLBACK(&onInspectorCollapsedTrampoline), this);
         g_signal_connect(m_inspectorSplit, "notify::show-sidebar", G_CALLBACK(&onInspectorShownTrampoline), this);
+        // And once now: a window that starts docked may never change it.
+        onInspectorCollapsedTrampoline(G_OBJECT(m_inspectorSplit), nullptr, this);
     }
     adw_view_stack_add_titled_with_icon(m_inspectorStack, page.widget, page.id, page.title, page.iconName);
 }
@@ -160,20 +162,6 @@ void AppWindow::toggleInspectorActivated(GSimpleAction *, GVariant *, gpointer u
         return; // no add-on adds an inspector page
     adw_overlay_split_view_set_show_sidebar(self->m_inspectorSplit,
                                             !adw_overlay_split_view_get_show_sidebar(self->m_inspectorSplit));
-}
-
-void AppWindow::onInspectorCollapsedTrampoline(GObject *, GParamSpec *, gpointer userData)
-{
-    auto *self = static_cast<AppWindow *>(userData);
-    const bool docked = !adw_overlay_split_view_get_collapsed(self->m_inspectorSplit);
-    adw_overlay_split_view_set_show_sidebar(self->m_inspectorSplit, docked && self->m_settings->showInspector());
-}
-
-void AppWindow::onInspectorShownTrampoline(GObject *, GParamSpec *, gpointer userData)
-{
-    auto *self = static_cast<AppWindow *>(userData);
-    if (!adw_overlay_split_view_get_collapsed(self->m_inspectorSplit))
-        self->m_settings->setShowInspector(adw_overlay_split_view_get_show_sidebar(self->m_inspectorSplit));
 }
 
 void AppWindow::showInspectorPage(const char *id)
@@ -389,6 +377,20 @@ gboolean AppWindow::shellSelectionIdleTrampoline(gpointer userData)
         self->m_shellSelectionChanged.emit();
     }
     return G_SOURCE_REMOVE;
+}
+
+void AppWindow::onInspectorCollapsedTrampoline(GObject *, GParamSpec *, gpointer userData)
+{
+    auto *self = static_cast<AppWindow *>(userData);
+    const bool docked = !adw_overlay_split_view_get_collapsed(self->m_inspectorSplit);
+    adw_overlay_split_view_set_show_sidebar(self->m_inspectorSplit, docked && self->m_settings->showInspector());
+}
+
+void AppWindow::onInspectorShownTrampoline(GObject *, GParamSpec *, gpointer userData)
+{
+    auto *self = static_cast<AppWindow *>(userData);
+    if (!adw_overlay_split_view_get_collapsed(self->m_inspectorSplit))
+        self->m_settings->setShowInspector(adw_overlay_split_view_get_show_sidebar(self->m_inspectorSplit));
 }
 
 } // namespace ustudio::app
