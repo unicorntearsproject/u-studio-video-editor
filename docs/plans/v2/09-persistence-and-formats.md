@@ -24,7 +24,7 @@ regenerated on save; it is output, not input.
 
 ```xml
 <?xml version="1.0"?>
-<mlt LC_NUMERIC="C" version="7.40.0" producer="main_bin" root="/home/jj/Videos/promo">
+<mlt LC_NUMERIC="C" version="7.40.0" producer="main_bin" root="/home/user/Videos/promo">
   <profile description="ustudio" width="1920" height="1080" frame_rate_num="30000" frame_rate_den="1001" … />
   <!-- bin: one master producer per asset -->
   <producer id="asset3" in="0" out="7499">
