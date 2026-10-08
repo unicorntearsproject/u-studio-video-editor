@@ -34,7 +34,7 @@ tools/demo-tour/make_demo.sh   # from the demo worktree (agent/strategist-demo)
 Stages the media once into `~/.cache/ustudio-demo-media` (copies from the
 owner's drive, read-only), builds a separate release `builddir-demo`,
 records, and saves `u-studio-demo-<date>-v<version>.mp4` into
-`/home/jj/projects/u-studio-video-editor-projects/demo-videos/`. It never
+`/home/jj/projects/_software-dist/u-stu-video-editor/demos/` (since 2026-10-08; earlier videos stay in `/home/jj/projects/u-studio-video-editor-projects/demo-videos/`). It never
 overwrites or removes a video there; a repeat run the same day gets `-2`,
 `-3`, and so on.
 
@@ -117,7 +117,7 @@ Series (one per slot, each under 5 minutes; done ones are dated):
 
 ## Browsing the videos
 
-Next to the videos is a dated index (`INDEX-<date>.md`) for the owner:
+Next to the videos (in `_software-dist/u-stu-video-editor/demos/`) is a dated index (`INDEX-<date>.md`) for the owner:
 every video in suggested order, with its topic, length and version, plus
 the superseded takes. Nothing in that folder is ever overwritten, so an
 updated index is a new dated file (`-2`, `-3` for a second one the same day).
@@ -133,6 +133,7 @@ python3 showreel_plan.py <runs> <runs>/b1          # segments, music video, plan
 cp <runs>/b1/plan.json <runs>/build/ && TOUR_SCRIPT=$PWD/showreel_build.py ./run_tour.sh <runs>/build 0
 TOUR_VOICE=marin TOUR_VOICE_STYLE=hype TOUR_VOICE_SPEED=1.0 python3 narrate.py narration/showreel.txt <runs>/narration.json
 python3 showreel_mix.py <runs>/b1/plan.json <runs>/narration.json <runs>/build/work/showreel-*.mp4 <out>.mp4
+# then cp -n <out>.mp4 into _software-dist/u-stu-video-editor/demos/ (never overwrite: -2, -3)
 ```
 
 The build imports the footage and a black music video into U Stu, splits the

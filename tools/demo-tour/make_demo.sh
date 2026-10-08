@@ -8,7 +8,9 @@
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd)
 REPO=$(cd "$HERE/../.." && pwd)
-DEST=/home/jj/projects/u-studio-video-editor-projects/demo-videos
+# Owner rule 2026-10-08: demos live beside the packages (videos before then stay in
+# projects/u-studio-video-editor-projects/demo-videos/).
+DEST=${TOUR_DEST:-/home/jj/projects/_software-dist/u-stu-video-editor/demos}
 MEDIA=${TOUR_MEDIA:-$HOME/.cache/ustudio-demo-media}
 AI=/run/media/jj/Expansion/Work/video/exports/ai-generated
 WORK=${TMPDIR:-/tmp}/ustudio-demo-run-$$
