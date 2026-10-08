@@ -287,6 +287,12 @@ with `meson test`.
   playlist primitives were each validated that way before wiring in). Report
   what you ran and what you saw.
 - Behaviour changes ship with a test in the same change when practical.
+- **Tests never touch the desktop** (owner rule, 2026-10-08). `meson test`
+  (and `just test/asan/tsan`) runs every test through
+  `tools/test-headless.sh`, the default test setup: a private Xvfb and D-Bus
+  session per test, no Wayland display, in-memory GSettings. Never bypass
+  it, and never launch the app on the owner's session to check something:
+  use a private Xvfb inside `dbus-run-session` (`docs/developer/testing.md`).
 - If any test fails, report the exact test names and output and stop
   claiming success until it is resolved or the owner explicitly defers it.
 - **Never implement production code solely to make a pre-existing failing
