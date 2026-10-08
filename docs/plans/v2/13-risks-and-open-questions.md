@@ -36,7 +36,8 @@ Resolved 2026-09-17 (team decision, questions reviewed one by one):
    index 0 = top, visual order in the model**, with reversal against MLT's
    native order happening once, inside `EngineSync`.
 4. **Repository hosting/CI.** ✅ **Settled by reality, not a decision**: the
-   repo lives on GitHub (`iDoMeteor/u-studio-video-editor`), so doc 11's
+   repo lives on GitHub (`unicorntearsproject/u-studio-video-editor`, the
+   account renamed from `iDoMeteor` in 2026-10; the old name redirects), so doc 11's
    GitHub Actions assumption applies as written — no translation needed.
 5. **Does the app need multiple windows/documents in v2.0?** ✅ **Decided:
    single document, multi-window off** for v2.0 (per the docs'

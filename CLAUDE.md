@@ -487,8 +487,13 @@ No permission needed for:
 - `meson setup`, `meson compile`, `meson test`, `ninja`, `clang-format
   --dry-run`, compiling a standalone repro in the scratchpad against MLT.
 - Launching the app from **your own worktree's** `builddir` to verify a
-  change. It opens a window on the owner's desktop: keep it short, close it
-  or kill the process you started, and never leave instances running.
+  change, **headless only** (owner rule, 2026-10-08): a private Xvfb display
+  inside a private `dbus-run-session` (`DISPLAY` set, `GDK_BACKEND=x11`,
+  `WAYLAND_DISPLAY` unset, `GDK_DEBUG=no-portals`, the portal-safe runtime
+  recipe in `docs/developer/testing.md`; Flatpak runs add
+  `--nosocket=wayland --socket=x11`). Nothing an agent starts may appear on
+  the owner's real desktop unless the owner asks for it explicitly. Close or
+  kill what you started; never leave instances running.
 - Reading the reference checkouts (`~/Repos/kdenlive`, the design system).
 - Installing, with `sudo dnf`, the Fedora packages that approved work needs
   (the `-devel` headers of a dependency an accepted ADR allows, a test or

@@ -92,4 +92,4 @@ Dragging from the overlaid sidebar onto the content drops there, as it does when
 
 ## Additional information
 
-Repro and the drag script: https://github.com/iDoMeteor/u-studio-video-editor/tree/main/tools/upstream-repros/libadwaita/overlay-split-view-shield-drop
+Repro and the drag script: https://github.com/unicorntearsproject/u-studio-video-editor/tree/main/tools/upstream-repros/libadwaita/overlay-split-view-shield-drop
