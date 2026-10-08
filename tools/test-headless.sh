@@ -7,6 +7,13 @@
 # (xdg-document-portal) get a scratch runtime dir, or they'd mount over the
 # desktop's /run/user/<uid>/doc and unmount it on exit.
 set -u
+# First, the test's environment without the caller's: tools/test_env.py
+# drops inherited variables off its allowlist (keys and tokens in the shell
+# that ran meson test) and keeps the test's own env from meson.build.
+if [ -z "${USTUDIO_TEST_ENV_CLEAN:-}" ]; then
+    exec python3 -I "$(dirname "$0")/test_env.py" wrap "$0" "$@"
+fi
+unset USTUDIO_TEST_ENV_CLEAN
 if [ -n "${USTUDIO_HEADLESS:-}" ]; then
     exec "$@" # already inside one (a smoke harness, or this script)
 fi

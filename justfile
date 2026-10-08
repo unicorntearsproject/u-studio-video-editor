@@ -11,7 +11,7 @@ build:
     meson compile -C {{builddir}}
 
 test: build
-    meson test -C {{builddir}} --print-errorlogs
+    tools/meson-test.sh -C {{builddir}} --print-errorlogs
 
 run: build
     ./{{builddir}}/src/app/u-studio-video-editor
@@ -62,7 +62,7 @@ asan *tests:
         ASAN_OPTIONS=detect_leaks=1:fast_unwind_on_malloc=0:verify_asan_link_order=0:detect_stack_use_after_return=1:halt_on_error=1 \
         UBSAN_OPTIONS=print_stacktrace=1:halt_on_error=1 \
         LSAN_OPTIONS=suppressions={{justfile_directory()}}/tests/sanitizers/lsan.supp \
-            meson test -C builddir-asan -t 6 --print-errorlogs "$@"
+            tools/meson-test.sh -C builddir-asan -t 6 --print-errorlogs "$@"
     }
     status=0
     if [ ${#rest[@]} -gt 0 ]; then run "{{asan_ffmpeg}} {{asan_modules}}" "${rest[@]}" || status=1; fi
@@ -81,7 +81,7 @@ tsan *tests:
     [ -d builddir-tsan ] || meson setup builddir-tsan -Db_sanitize=thread -Db_lundef=false -Dtests=enabled
     meson compile -C builddir-tsan
     TSAN_OPTIONS=ignore_noninstrumented_modules=1:report_thread_leaks=0:second_deadlock_stack=1:halt_on_error=1 \
-        meson test -C builddir-tsan -t 10 --print-errorlogs {{tests}}
+        tools/meson-test.sh -C builddir-tsan -t 10 --print-errorlogs {{tests}}
 
 # The factory-policy test alone -- the "no Qt in the process" proof.
 check-qt: build
@@ -239,9 +239,9 @@ release-dir version:
 dropins-builtin:
     [ -d builddir-dropins-builtin ] || meson setup builddir-dropins-builtin -Dtests=enabled $(for d in drop-ins/*/meson.build; do d=${d#drop-ins/}; printf -- '-Ddropin_%s=builtin ' "${d%/meson.build}"; done)
     meson compile -C builddir-dropins-builtin  # meson test builds only the tests' own dependencies, not u-studio-render
-    meson test -C builddir-dropins-builtin --print-errorlogs
+    tools/meson-test.sh -C builddir-dropins-builtin --print-errorlogs
 
 dropins-module:
     [ -d builddir-dropins-module ] || meson setup builddir-dropins-module -Dtests=enabled $(for d in drop-ins/*/meson.build; do d=${d#drop-ins/}; printf -- '-Ddropin_%s=module ' "${d%/meson.build}"; done)
     meson compile -C builddir-dropins-module  # meson test builds only the tests' own dependencies, not u-studio-render
-    meson test -C builddir-dropins-module --print-errorlogs
+    tools/meson-test.sh -C builddir-dropins-module --print-errorlogs

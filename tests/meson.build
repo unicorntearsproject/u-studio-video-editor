@@ -12,9 +12,8 @@ if doctest_dep.found()
 endif
 
 # The guard for the headless default (meson.build's test setup): a test that
-# can see the desktop's display fails, so a setup that stops applying (a
-# renamed setup, a wrapper bypassed) shows at once.
-test('headless-guard', find_program('sh'),
-  args: ['-c', 'if [ -n "${WAYLAND_DISPLAY:-}" ] || [ "${DISPLAY:-}" = ":0" ] || [ -z "${USTUDIO_HEADLESS:-}" ]; then ' +
-               'echo "tests can see the desktop (WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-} DISPLAY=${DISPLAY:-}): ' +
-               'run them through the headless test setup"; exit 1; fi'])
+# can see the desktop's display, or a key or token from the shell that ran
+# meson test, fails, so a setup that stops applying (a renamed setup, a
+# wrapper bypassed) shows at once.
+test('headless-guard', find_program('python3'),
+  args: ['-I', files('headless_guard.py'), meson.project_source_root() / 'tools'])

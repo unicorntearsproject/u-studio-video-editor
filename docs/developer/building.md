@@ -69,7 +69,7 @@ sudo dnf install clang-tools-extra just
 |---|---|
 | `just setup` | `meson setup builddir -Dbuildtype=debug -Dtests=enabled` |
 | `just build` | `meson compile -C builddir` |
-| `just test` | `meson test -C builddir --print-errorlogs` |
+| `just test` | `tools/meson-test.sh -C builddir --print-errorlogs` (`meson test` from a clean environment, [testing](testing.md#no-secrets-in-tests-or-their-logs)) |
 | `just run` | `./builddir/src/app/u-studio-video-editor` |
 | `just fmt` | `clang-format -i` on every tracked `.cpp`/`.h` |
 | `just check-qt` | Build, then check that no Qt is loaded (below) |
@@ -78,7 +78,7 @@ sudo dnf install clang-tools-extra just
 | `just flatpak` | Build the Flatpak bundle ([Packaging](packaging.md)) |
 | `just dist <bundle>` | Copy a bundle to the distribution folder with a checksum |
 
-Run `meson test` before every commit.
+Run `just test` (or `tools/meson-test.sh -C builddir`) before every commit.
 
 ## Logging
 

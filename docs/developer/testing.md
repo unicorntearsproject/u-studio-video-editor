@@ -4,8 +4,11 @@
 
 All tests are [doctest](../plans/v2/adr/010-doctest-vendored.md) suites
 under `tests/`, registered with meson and run with `just test` (or
-`meson test -C builddir --print-errorlogs`). Run one suite by its meson
-name, for example `meson test -C builddir engine-sync`.
+`tools/meson-test.sh -C builddir --print-errorlogs`). Run one suite by its
+meson name, for example `tools/meson-test.sh -C builddir engine-sync`.
+`tools/meson-test.sh` is `meson test` from a clean environment (see
+"No secrets in tests or their logs" below); prefer it to a plain
+`meson test`.
 
 ## Tests never use your desktop
 
@@ -32,6 +35,36 @@ parallel jobs). A harness already inside such a session sets
 `headless-guard` test fails if a test can see `WAYLAND_DISPLAY` or `:0`.
 Running a test binary by hand: run it through the wrapper,
 `tools/test-headless.sh builddir/tests/app/test_<name>`.
+
+## No secrets in tests or their logs
+
+meson writes the whole environment of the process that runs `meson test`
+into `meson-logs/testlog.txt` (its "Inherited environment:" line) and
+`testlog.json` (every test's `env`), and nothing in `meson.build` can turn
+that off. A developer's or an agent's shell holds API keys and tokens, so
+until 2026-10-08 every build dir's test logs held them. Two layers keep
+them out, both reading one allowlist in `tools/test_env.py`:
+
+- `tools/meson-test.sh` (used by `just test`, `just asan`, `just tsan`, the
+  drop-in recipes and the landing gates) starts meson with only the
+  allowlisted variables: paths and locale, the XDG dirs, `CCACHE_*`,
+  `MLT_*`, `USTUDIO_*` and the sanitizer options. Nothing else reaches
+  the logs.
+- `tools/test-headless.sh` hands each test only the allowlist plus its
+  own env, even under a plain `meson test`. Its parent is the meson
+  process, so a variable with the same value there was inherited from the
+  caller's shell, and is dropped unless allowlisted. A new or changed one
+  came from the test's `env:` in `meson.build` or from meson, and is kept.
+  So a new test's env needs no change here.
+
+Names matching `OPENAI_*`, `*_TOKEN`, `*_SECRET`, `*_API_KEY` or
+`AWS_SECRET*` are dropped even if allowlisted, and `headless-guard` fails,
+naming them but never printing their values, if a test can see one. A
+plain `meson test` still logs your shell's environment (only the tests are
+protected), so use `just test` or `tools/meson-test.sh`. A test that needs
+a new variable from the caller's shell adds its name to `ALLOWED` in
+`tools/test_env.py`. Don't read or paste `testlog.*` files from a build
+dir made before this change: they may hold keys.
 
 ## Layout
 
