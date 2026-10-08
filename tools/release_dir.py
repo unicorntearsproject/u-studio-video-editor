@@ -122,10 +122,13 @@ def main():
     sums.write_text("".join(f"{f['sha256']}  {f['name']}\n" for f in files.values()))
     manifest = {"schema": 1, "version": v, "released": args.released, "key_fingerprint": primary, "files": files}
     # The tag's commit, when the tag is already on the public repo (it must exist before publishing).
-    tag = subprocess.run(["git", "ls-remote", REPO, f"refs/tags/v{v}^{{}}", f"refs/tags/v{v}"],
-                         capture_output=True, text=True).stdout.split()
+    # An annotated tag lists its own object first and the commit as <ref>^{}; a lightweight one only the commit.
+    refs = dict(reversed(line.split("\t")) for line in subprocess.run(
+        ["git", "ls-remote", REPO, f"refs/tags/v{v}^{{}}", f"refs/tags/v{v}"],
+        capture_output=True, text=True).stdout.splitlines() if "\t" in line)
+    tag = refs.get(f"refs/tags/v{v}^{{}}") or refs.get(f"refs/tags/v{v}")
     if tag:
-        manifest["commit"] = tag[0]
+        manifest["commit"] = tag
     (out / f"{PRODUCT}-latest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     subprocess.run(["sha256sum", "-c", "--quiet", sums.name], cwd=out, check=True)
 
