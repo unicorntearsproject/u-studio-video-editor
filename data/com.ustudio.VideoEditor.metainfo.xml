@@ -28,6 +28,21 @@
     <color type="primary" scheme_preference="dark">#A04BFA</color>
   </branding>
   <releases>
+    <release version="0.82.2-beta.1" date="2026-10-08" type="development">
+      <description>
+        <p>New since 0.80.2-beta.1:</p>
+        <ul>
+          <li>The editor is now called U-Stu Video Editor, and its title tool U-Stu Titles, everywhere you see the name.</li>
+          <li>A project that won't open says why: not found, saved by a newer version, not a U-Stu project, or damaged. Projects saved in older formats still open; one saved by a newer version is refused with a clear message instead of opening wrongly.</li>
+          <li>Missing media: opening a project whose files have moved offers Find Automatically, Search a Folder, Locate or Not Now in one message. Find Automatically looks in the likely places, with progress and Cancel.</li>
+          <li>Ctrl+Q quits, asking first if there are unsaved changes.</li>
+          <li>The inspector has a button at the end of its tabs to hide it, and F9 shows or hides it. A wide window remembers whether it was open, and the tabs have room around them.</li>
+          <li>The Transform card's Rotation label shows whole.</li>
+          <li>U-Stu Titles no longer crashes when you close it while its preview is playing.</li>
+        </ul>
+        <p>Try opening a project after moving or renaming one of its media files, and let Find Automatically or Search a Folder fix it. Try F9 and the hide button on a wide window, then relaunch. Install the Titles and Effects add-ons of this same version with the app. Known limit: U-Stu Share, the helper for sharing template packs online, isn't in this download, so Browse Shared and Publish don't appear.</p>
+      </description>
+    </release>
     <release version="0.80.2-beta.1" date="2026-09-29" type="development">
       <description>
         <p>New since 0.78.4-beta.1:</p>
