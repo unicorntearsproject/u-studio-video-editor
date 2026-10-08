@@ -291,6 +291,16 @@ bool Settings::showHoverPreview() const
     return getBool("show-hover-preview", true);
 }
 
+bool Settings::showInspector() const
+{
+    return getBool("show-inspector", false);
+}
+
+void Settings::setShowInspector(bool show)
+{
+    setBool("show-inspector", show);
+}
+
 void Settings::setShowHoverPreview(bool show)
 {
     setBool("show-hover-preview", show);

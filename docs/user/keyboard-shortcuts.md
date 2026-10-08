@@ -46,6 +46,7 @@ a space, it doesn't play. Click the timeline or the preview to use them again.
 |---|---|
 | `+` or `=` / `-` | Zoom in / out |
 | `0` | Zoom to fit |
+| `F9` | Show or hide the inspector (with an add-on that adds pages, such as Effects) |
 
 ## Project
 

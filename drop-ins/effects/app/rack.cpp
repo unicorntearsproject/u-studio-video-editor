@@ -1856,7 +1856,7 @@ class Rack
         GtkWidget *label = gtk_label_new(title.c_str());
         gtk_label_set_xalign(GTK_LABEL(label), 0.0f);
         gtk_label_set_ellipsize(GTK_LABEL(label), PANGO_ELLIPSIZE_END);
-        gtk_label_set_width_chars(GTK_LABEL(label), 6);
+        gtk_label_set_width_chars(GTK_LABEL(label), 8); // "Rotation", "Distance" whole
         gtk_label_set_max_width_chars(GTK_LABEL(label), 12);
         if (!description.empty())
             gtk_widget_set_tooltip_text(label, description.c_str());

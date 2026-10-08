@@ -389,24 +389,71 @@ Publish the app and its extensions together, after the smoke test and
 wget) with 403, so check a published URL with a browser User-Agent:
 `curl -sI -A 'Mozilla/5.0' <url>`.
 
-### Release directories for other sites
+### Release key and tags
 
-The owner also lists U-Stu on software.rustybucket.ai (2026-10-08). That
-site wants `<product>-<version>-<platform>.<ext>` names, a `SHA256SUMS`
-file and its detached OpenPGP signature `SHA256SUMS.asc`, and never
-rewrites a published version. `just release-dir <version>` makes one from
-the bundles `just dist` copied:
+Releases are signed with U-Stu's own OpenPGP release key (owner,
+2026-10-08), in the Rusty Wave pattern: a certify-only ed25519 primary and
+a signing-only ed25519 subkey, neither expiring, uid "U-Stu Video Editor
+Release <noreply@users.noreply.github.com>". The public key is
+`packaging/keys/u-stu-release.asc`:
 
-- it checks each bundle against its `.sha256` sidecar first;
-- the copies are `u-studio-video-editor[-dropin-titles|-dropin-effects]-<version>-linux-x86_64.flatpak`
-  in `<dist folder>/releases/<version>/`, which must not exist yet;
-- `SHA256SUMS` lists them by file name, as `sha256sum` writes it;
-- with `USTUDIO_SIGNING_KEY` set to the product key's fingerprint, it signs
-  `SHA256SUMS` and verifies the signature. The key is the owner's; the
-  recipe never picks one, and unsigned output says so.
+| Key | Fingerprint |
+|---|---|
+| Primary (certify; the one to pin) | `FE210DDDE2106FDB0C16BFF5D12963B6E6B0D13F` |
+| Signing subkey | `19157495D0C6700EE4364476570EAA9409370813` |
 
-Our own bucket and the dist folder keep our names. The other site's team
-publishes from the directory.
+The secret key stays in the owner's keyring and is never copied, printed
+or committed. Sign with the subkey: `USTUDIO_SIGNING_KEY=19157495D0C6700EE4364476570EAA9409370813 just release-dir <v>`.
+
+Every releasable build has an annotated `v<version>` tag signed with the
+subkey (`git tag -v` checks it), from 0.50.0-beta.1 on. The tag sits at
+the commit that bumped `meson.build` to that version, or at the merge that
+set it where no commit did. A new release is tagged at the commit it's
+built from, with the tagger set to the key's noreply identity, and pushed
+by name (`git push origin refs/tags/v<version>`, never `--tags`: the repo
+also holds MLT's own tags).
+
+### Corresponding source
+
+The Flatpaks bundle GPL code (FFmpeg with x264, frei0r, MLT), so every
+release ships its corresponding source. `just source-archive`, run after
+the three builds, writes `u-studio-video-editor-<version>-source.tar.gz`:
+this repository at `HEAD` (manifests and patches included) plus, under
+`third-party-sources/`, every upstream source the manifests build, taken
+from flatpak-builder's download cache and git mirrors (archives checked
+against the manifests' sha256, git sources at their pinned commits), with
+a `SOURCES.md` index. The output is deterministic. It goes to the dist
+folder with its `.sha256` and is published with every release (owner,
+2026-10-08).
+
+### Release directories for software.rustybucket.ai
+
+The owner also lists U-Stu on software.rustybucket.ai (2026-10-08).
+`just release-dir <version>` (`tools/release_dir.py`) builds the directory
+to RBA Infra's spec from the dist folder's bundles and source archive. It
+lands in `<dist folder>/releases/<version>/`, which must not exist yet, and
+is flat:
+
+- `u-studio-video-editor[-dropin-titles|-dropin-effects]-<v>-linux-x86_64.flatpak`;
+- `u-studio-video-editor-<v>-source.tar.gz`, required whenever a Flatpak
+  ships;
+- `u-studio-video-editor-<v>-SHA256SUMS`, listing the files above by bare
+  name;
+- `u-studio-video-editor-latest.json`, the manifest: schema 1, version,
+  release date, the key's primary fingerprint, and per file (manifest keys
+  `linux-flatpak`, `linux-flatpak-titles`, `linux-flatpak-effects` and
+  `source`) its name, URL, signature URL, size and sha256, plus `commit`
+  once the `v<version>` tag is on the public repo;
+- `<file>.asc` for every file, each holding exactly one signature, made
+  with the key `USTUDIO_SIGNING_KEY` names (the product key, primary or
+  signing subkey).
+
+Every input must match its `.sha256` first. Without a key the directory
+is written unsigned and isn't ready to hand over. Version must be SemVer
+without build metadata, and RBA's publish refuses a version without its
+`v<version>` tag on unicorntearsproject/u-studio-video-editor. Our own
+bucket and the dist folder keep our names. RBA Infra publishes from the
+directory after its own pre-flight.
 
 ## Releases
 
