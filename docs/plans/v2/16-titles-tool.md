@@ -28,7 +28,7 @@ A separate application (not a dialog inside the editor) because:
 Working name: **u Studio Titles**, executable `u-studio-titles`, app id
 `com.ustudio.Titles`.
 
-> REVIEW (VE Text, 2026-09-28): owner decision: U Stu Titles stays
+> REVIEW (VE Text, 2026-09-28): owner decision: U-Stu Titles stays
 > in-app only for now. It's reached from the editor (the header's T,
 > New Title, Edit Title), with no separate app ID in the packages and no
 > menu entry of its own; the Flatpak ships it inside the Titles
@@ -675,7 +675,7 @@ Acceptance:
 
 A title made from a template remembers which one, and which revision of
 it, so that when the template changes (a new app version's built-in, an
-updated pack, or the user editing their own template), U Stu Titles
+updated pack, or the user editing their own template), U-Stu Titles
 offers to bring the title up to date without losing its text.
 
 - **What's recorded.** Two root attributes of the `.ustitle`:
@@ -719,7 +719,7 @@ Acceptance:
 - [x] The merge keeps field text by name, takes the template's design,
       reports dropped fields, and records the new revision; undo restores
       the title exactly.
-- [x] In U Stu Titles: open a title, change its user template, reopen:
+- [x] In U-Stu Titles: open a title, change its user template, reopen:
       the banner shows; Update applies it; the banner goes; saving and
       reopening shows no banner. (`titles-core`; the designer on a
       private Xvfb with a stale title: banner, Update, Ctrl+S, reopen.)

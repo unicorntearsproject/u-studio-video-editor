@@ -47,7 +47,7 @@ def main():
     }
     manifest = (f'<?xml version="1.0" encoding="UTF-8"?>\n'
                 f'<pack format="1" id="test/smoke-pack" version={quoteattr(args.version)}>\n'
-                f"  <title>Smoke test pack</title>\n  <author>U Stu tests</author>\n  <licence>CC0-1.0</licence>\n")
+                f"  <title>Smoke test pack</title>\n  <author>U-Stu tests</author>\n  <licence>CC0-1.0</licence>\n")
     for path, data in files.items():
         manifest += (f"  <file path={quoteattr(path)} size=\"{len(data)}\" "
                      f"sha256=\"{hashlib.sha256(data).hexdigest()}\"/>\n")

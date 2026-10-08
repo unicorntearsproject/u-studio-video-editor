@@ -11,7 +11,7 @@ The window opens maximised; un-maximise it for a smaller one.
 
 | Area | What it's for |
 |---|---|
-| **Header bar** (top) | New, Open, Recent, Save, Import, Render, Undo/Redo, Settings (tools) and Help (`?`). With the Titles add-on, a **T** between Render and Settings opens U Stu Titles, the title designer. The title shows the project's size and frame rate. |
+| **Header bar** (top) | New, Open, Recent, Save, Import, Render, Undo/Redo, Settings (tools) and Help (`?`). With the Titles add-on, a **T** between Render and Settings opens U-Stu Titles, the title designer. The title shows the project's size and frame rate. |
 | **Media browser** (left, collapsible) | Every file you've imported, with thumbnail, length and badges. |
 | **Preview** (centre) | The picture at the playhead. You can also place and resize pictures here. |
 | **Transport bar** (under the preview) | Play, step, shuttle, split (scissors), Ripple, volume, preview scale. |

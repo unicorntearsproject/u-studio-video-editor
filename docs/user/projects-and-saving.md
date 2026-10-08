@@ -53,7 +53,7 @@ don't make backups.
 
 ## Safety
 
-- U Stu never overwrites your source media. Save and Render refuse any
+- U-Stu never overwrites your source media. Save and Render refuse any
   path that is one of the project's own media files.
 - Renders are written to a temporary file and only renamed into place once
   they've finished.

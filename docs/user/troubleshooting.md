@@ -31,7 +31,7 @@ A conformed proxy also fixes phone recordings with a variable frame rate.
 Turn off **GPU acceleration** (Settings › Performance › Hardware): playback
 then runs on the processor. If that fixes it, your graphics driver is the
 cause; please report it with **Copy Diagnostics** from Help › About, which
-includes what the GPU row says. If U Stu turned GPU acceleration off by
+includes what the GPU row says. If U-Stu turned GPU acceleration off by
 itself, it closed unexpectedly while using the graphics card last time;
 turn it back on to try again.
 
@@ -40,7 +40,7 @@ turn it back on to try again.
 Native builds from Fedora or other distributions use their own copy of the
 MLT library, which leaks a little memory for every frame played on the
 graphics card (about 10 MB a minute). The Flatpak will carry a fix. If a long
-session gets slow, save and restart U Stu, or turn GPU acceleration off.
+session gets slow, save and restart U-Stu, or turn GPU acceleration off.
 
 ### No sound
 
@@ -48,7 +48,7 @@ session gets slow, save and restart U Stu, or turn GPU acceleration off.
   strip says "Muted").
 - Check that the clip has sound: an audio-less video clip has no
   waveform.
-- U Stu plays through PipeWire or PulseAudio. Check that the right
+- U-Stu plays through PipeWire or PulseAudio. Check that the right
   output device is selected in your system's sound settings.
 
 ### Clips are red and striped
@@ -69,9 +69,9 @@ A message says why, and the project file is left as it is:
   each of your last five saves are kept in the hidden `.ustudio-backups`
   folder beside the project; copy the newest one back to the project's name
   and open it.
-- **Saved by a newer U Stu**: a newer version of the editor saved it. Update
+- **Saved by a newer U-Stu**: a newer version of the editor saved it. Update
   this one (the message names the version you need).
-- **Not a U Stu project**: the file isn't a project this version opens. That
+- **Not a U-Stu project**: the file isn't a project this version opens. That
   includes projects from the very first prototype editor.
 - **The project is damaged**: its contents don't fit together. Try the newest
   copy in `.ustudio-backups`, and report it (see above), attaching the file.
@@ -99,7 +99,7 @@ plays it exactly either way ([Transition styles](effects.md#transition-styles)).
 
 ### An effect is missing or turned off
 
-With the Effects add-on, U Stu checks every effect in the background the
+With the Effects add-on, U-Stu checks every effect in the background the
 first time (and after new effects are installed). One that crashed, hung
 or ruined the picture in that check is turned off: it's hidden from the
 **Add** page, and a project that uses it plays without it; its card on the

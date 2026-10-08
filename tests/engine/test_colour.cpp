@@ -355,7 +355,7 @@ TEST_CASE("colour: videos with alpha are probed as such and composite without a 
         const char *name, *file, *format, *vcodec, *pixFmt;
         std::vector<std::pair<const char *, const char *>> options;
     };
-    // What U Stu Titles exports for OBS and other apps (T2d).
+    // What U-Stu Titles exports for OBS and other apps (T2d).
     const std::vector<Case> cases = {
         {"ProRes 4444", "p.mov", "mov", "prores_ks", "yuva444p10le", {{"profile", "4444"}}},
         {"VP9 alpha", "v.webm", "webm", "libvpx-vp9", "yuva420p", {{"vb", "4M"}}},

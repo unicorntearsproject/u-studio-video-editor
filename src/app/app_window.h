@@ -358,7 +358,7 @@ class AppWindow : public ShellHost
     void loadProjectAsync(const std::string &path, std::function<void(core::Model)> adopt,
                           std::function<void(const core::ProjectLoadError &)> failed);
     // Why a project didn't open, in words that fit the kind (missing, saved
-    // by a newer version, not a U Stu project, ...), with the full reason.
+    // by a newer version, not a U-Stu project, ...), with the full reason.
     void showProjectLoadError(const std::string &path, const core::ProjectLoadError &error);
     // The part of every project swap that's the same: cancels the old
     // project's jobs, swaps the model in, clears undo, resets the engine

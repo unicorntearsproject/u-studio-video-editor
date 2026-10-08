@@ -112,7 +112,7 @@ gint onLocalOptions(GApplication *, GVariantDict *options, gpointer)
 int main(int argc, char **argv)
 {
     Log::init("u-studio-titles");
-    Log::info("[titles] Starting U Stu Titles");
+    Log::info("[titles] Starting U-Stu Titles");
     // One process per launch: each title stays apart, and a crash in one
     // never takes another's unsaved work.
     AdwApplication *app = adw_application_new(

@@ -59,7 +59,7 @@ AdwPreferencesPage *buildDropInsPage(const dropins::DropInRegistry *registry, Se
     const std::vector<std::string> disabled = settings.disabledDropIns();
 
     AdwPreferencesGroup *installed =
-        addGroup(page, "Installed", "Switching a drop-in on or off applies the next time U Stu starts.");
+        addGroup(page, "Installed", "Switching a drop-in on or off applies the next time U-Stu starts.");
     if (entries.empty())
         adw_preferences_group_add(installed, textRow("No drop-ins installed", ""));
     for (const dropins::DropInRegistry::Entry &entry : entries) {
@@ -88,7 +88,7 @@ AdwPreferencesPage *buildDropInsPage(const dropins::DropInRegistry *registry, Se
                 missing.push_back(name);
     if (!missing.empty()) {
         AdwPreferencesGroup *group =
-            addGroup(page, "Not installed", "U Stu never downloads drop-ins; install them like any other package.");
+            addGroup(page, "Not installed", "U-Stu never downloads drop-ins; install them like any other package.");
         for (const std::string &name : missing)
             adw_preferences_group_add(group,
                                       textRow(name, "Install the u-studio-video-editor-dropin-" + name +

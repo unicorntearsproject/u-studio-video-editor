@@ -75,7 +75,7 @@ Two checks guard every package, Flatpak or Snap:
   9. Titles, when the titles extension is installed in the same
      installation: the drop-in loads from the extension mount, a `.ustitle`
      imports, `u-studio-render --title-export` in the sandbox renders it
-     with alpha, Edit Title starts U Stu Titles, and U Stu Titles
+     with alpha, Edit Title starts U-Stu Titles, and U-Stu Titles
      installs a template pack made by `tools/make_test_pack.py` (fails on
      an extension built without libarchive; needs 0.68 or later). The bell
      template's animated (Lottie) layer must render: its box shows at
@@ -129,7 +129,7 @@ manifest (the app pinned to the tag's commit), the module files, and
 | Metainfo: screenshots at a tag or commit URL, window only, ≤ 1000×700, captions without full stops | **Open:** who makes them, and where they're hosted |
 | Metainfo: branding colours | Done: `#FC3CBA` light, `#A04BFA` dark |
 | Metainfo: OARS rating | Done: `oars-1.1`, no content |
-| Name ≤ 20 characters, not lowercase-first; summary ≤ 35 characters, no toolkit names | Name decided: "U Stu Video Editor" (18; owner, 2026-09-27; VE Core renames the app). **Open:** the summary still names GTK4/libadwaita; owner question |
+| Name ≤ 20 characters, not lowercase-first; summary ≤ 35 characters, no toolkit names | Name decided: "U-Stu Video Editor" (18; owner, 2026-09-27; VE Core renames the app). **Open:** the summary still names GTK4/libadwaita; owner question |
 | Icon: SVG or PNG ≥ 256 px, no baked shadow | Done: the owner's SVG. Flathub also warns about icons that fill the whole canvas; this one nearly does |
 | `x-checker-data` for external sources | Done for FFmpeg and MLT; x264 is manual |
 | Static permissions justified | Justification below |
@@ -327,9 +327,9 @@ The titles extension is
 - `-Dtitles_share=disabled`: `u-studio-share`, the template sharing
   helper, needs network access, which the app's sandbox doesn't have. How
   it ships (its own app ID) is an open question. Without it installed
-  beside the designer, U Stu Titles hides Browse Shared and Publish.
+  beside the designer, U-Stu Titles hides Browse Shared and Publish.
 - The designer's desktop entry, MIME type and AppStream file are left out,
-  because an extension can't export them. U Stu Titles is reached only from
+  because an extension can't export them. U-Stu Titles is reached only from
   the editor (Edit Title). A menu entry of its own would need a separate
   app ID.
 - The built-in templates install to `share/u-studio/titles/templates/`
@@ -391,7 +391,7 @@ wget) with 403, so check a published URL with a browser User-Agent:
 
 ### Release directories for other sites
 
-The owner also lists U Stu on software.rustybucket.ai (2026-10-08). That
+The owner also lists U-Stu on software.rustybucket.ai (2026-10-08). That
 site wants `<product>-<version>-<platform>.<ext>` names, a `SHA256SUMS`
 file and its detached OpenPGP signature `SHA256SUMS.asc`, and never
 rewrites a published version. `just release-dir <version>` makes one from

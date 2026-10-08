@@ -1,4 +1,4 @@
-# U Stu Video Editor
+# U-Stu Video Editor
 
 **A fast, focused video editor for Linux, built for people who talk on
 camera.** Drop in an hour-long recording, find the good bits by waveform,
@@ -173,7 +173,7 @@ meson compile -C builddir
 
 ## About
 
-U Stu is a from-scratch editor. It isn't a port of kdenlive, though it
+U-Stu is a from-scratch editor. It isn't a port of kdenlive, though it
 uses the same MLT engine. It's built in C++23 with meson. It's developed on
 Fedora for 1080p/4K livestream and promo editing for the Unicorn Tears
 brand.

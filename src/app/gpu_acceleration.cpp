@@ -66,7 +66,7 @@ void GpuAcceleration::start()
         m_settings.setGpuAcceleration(false);
         Log::warn("[gpu] the last session ended with the GPU pipeline live; GPU acceleration turned off");
         setStatus(Status::Off, {});
-        m_hooks.notify("GPU acceleration was turned off because U Stu closed unexpectedly while using it. "
+        m_hooks.notify("GPU acceleration was turned off because U-Stu closed unexpectedly while using it. "
                        "You can turn it back on in Settings › Performance.");
         return;
     }

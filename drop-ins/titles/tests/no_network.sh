@@ -1,5 +1,5 @@
 #!/bin/sh
-# ADR-020, T7's acceptance: the editor and U Stu Titles link no network
+# ADR-020, T7's acceptance: the editor and U-Stu Titles link no network
 # library, and the editor's Flatpak asks for no network; u-studio-share,
 # the helper, does link one.
 #

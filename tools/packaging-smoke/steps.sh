@@ -262,7 +262,7 @@ if [ "$SMOKE_RUNNER" = flatpak ] && flatpak info --user "$SMOKE_APP_ID.DropIn.Ti
     d act select-all; d act titles-edit
     # The designer can take several seconds to start in the sandbox.
     for _ in $(seq 1 20); do designer=$(ours u-studio-titles); [ -n "$designer" ] && break; sleep 1; done
-    check "Edit Title opens U Stu Titles in the sandbox" test -n "$designer"
+    check "Edit Title opens U-Stu Titles in the sandbox" test -n "$designer"
     d shot 08c-designer
     [ -n "$designer" ] && kill "$designer"
     d act clear-selection; d act save; sleep 1.5
@@ -273,7 +273,7 @@ if [ "$SMOKE_RUNNER" = flatpak ] && flatpak info --user "$SMOKE_APP_ID.DropIn.Ti
     pack=$(flatpak run --user --no-documents-portal --command=/app/lib/u-studio/extensions/Titles/bin/u-studio-titles \
         "$SMOKE_APP_ID" --install-pack "$M/smoke-pack.zip" 2>&1); rc=$?
     echo "  install-pack (exit $rc): $pack"
-    check "U Stu Titles installs a template pack (libarchive in the extension)" \
+    check "U-Stu Titles installs a template pack (libarchive in the extension)" \
         sh -c "[ $rc = 0 ] && echo \"\$1\" | grep -q '^installed test/smoke-pack '" _ "$pack"
     # Animated (Lottie) layers (ADR-021, from 0.78): the bell template's
     # ringing bell, drawn by the extension's ThorVG. It rings in bursts with

@@ -1,4 +1,4 @@
-# U Stu documentation
+# U-Stu documentation
 
 [← Back to the README](../README.md)
 

@@ -2,7 +2,7 @@
 
 [Docs home](../README.md) › Developer docs
 
-U Stu is C++23 on GTK4 + libadwaita and MLT 7, built with meson. Start
+U-Stu is C++23 on GTK4 + libadwaita and MLT 7, built with meson. Start
 with [Building](building.md), then read [Architecture](architecture.md)
 before changing code.
 

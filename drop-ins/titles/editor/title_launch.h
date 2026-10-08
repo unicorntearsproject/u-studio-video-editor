@@ -1,6 +1,6 @@
 #pragma once
 
-// Opening a title in U Stu Titles from the editor (doc 16, "Editor
+// Opening a title in U-Stu Titles from the editor (doc 16, "Editor
 // integration"): a separate process, started with GSubprocess (portable,
 // ADR-017), on the title's file, over the editor's current frame. The
 // editor's file watch brings the saved result back.

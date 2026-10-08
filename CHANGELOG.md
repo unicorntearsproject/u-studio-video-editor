@@ -4,6 +4,11 @@ All notable user-facing changes to this project are documented here.
 Format: newest first, one line per change. Internal refactors, tests, and
 docs-only changes are not listed (CLAUDE.md).
 
+## (next)
+
+- The name is now spelt "U-Stu": U-Stu Video Editor and U-Stu Titles, in
+  titles, About, menus, messages and the docs.
+
 ## 0.81.0-beta.1
 
 - A project that won't open says why (not found, saved by a newer version,

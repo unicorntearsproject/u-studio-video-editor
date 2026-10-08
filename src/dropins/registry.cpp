@@ -79,7 +79,7 @@ std::string DropInRegistry::problemWith(const UStudioDropInDescription *describe
         return "it was built for drop-in API " + std::to_string(describe->apiVersion) + ", this app has " +
                std::to_string(DROPIN_API_VERSION);
     if (!describe->appVersion || appVersion != describe->appVersion)
-        return std::string("it was built for U Stu ") + (describe->appVersion ? describe->appVersion : "(unknown)") +
+        return std::string("it was built for U-Stu ") + (describe->appVersion ? describe->appVersion : "(unknown)") +
                ", this is " + appVersion + " (drop-ins update with the app)";
     if (!describe->name || !*describe->name)
         return "it has no name";

@@ -81,7 +81,7 @@ class Browser
         build();
         m_host.addHints({
             {"effects.families", "Effects", "More effect families",
-             "VST2 and OpenFX plugins: off unless you choose them here; a change applies the next time U Stu "
+             "VST2 and OpenFX plugins: off unless you choose them here; a change applies the next time U-Stu "
              "starts",
              nullptr, nullptr},
             {"effects.import-luts", "Effects", "Import LUTs",
@@ -591,7 +591,7 @@ class Browser
         }
         const bool changed = families.vst2 != m_catalog.experimental.vst2 ||
                              families.openfx != m_catalog.experimental.openfx;
-        m_host.showStatus(changed ? "Saved: it applies the next time you start U Stu." : "Saved.");
+        m_host.showStatus(changed ? "Saved: it applies the next time you start U-Stu." : "Saved.");
     }
 
     // --- The LUT library (FX5) ---------------------------------------------
@@ -774,7 +774,7 @@ class Browser
         gtk_check_button_set_active(GTK_CHECK_BUTTON(m_openfx), saved.openfx);
         g_signal_connect(m_openfx, "toggled", G_CALLBACK(&onFamiliesTrampoline), this);
         gtk_box_append(GTK_BOX(families), m_openfx);
-        GtkWidget *note = gtk_label_new("These load when U Stu starts, so a change applies next time. They're checked "
+        GtkWidget *note = gtk_label_new("These load when U-Stu starts, so a change applies next time. They're checked "
                                         "like every effect, and any that would load Qt stay off.");
         gtk_label_set_wrap(GTK_LABEL(note), TRUE);
         gtk_label_set_max_width_chars(GTK_LABEL(note), 32);

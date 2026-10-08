@@ -16,7 +16,7 @@
 # core24's archive, Mesa from the gnome extension's gpu-2404.
 
 name: u-studio-video-editor # TODO: the registered snap name (owner question 12)
-title: U Stu Video Editor
+title: U-Stu Video Editor
 summary: Multi-track video editor for livestream and promo editing
 description: |
   u Studio is a multi-track video editor for GNOME, made for livestream

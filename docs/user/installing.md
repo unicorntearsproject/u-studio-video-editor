@@ -2,7 +2,7 @@
 
 [Docs home](../README.md) › [User guide](README.md) › Installing
 
-U Stu ships as a Flatpak bundle. It runs on any Linux distribution with
+U-Stu ships as a Flatpak bundle. It runs on any Linux distribution with
 Flatpak. It's tested on Fedora 44 and made for Linux Mint 22.
 
 ## Install
@@ -20,7 +20,7 @@ flatpak run com.ustudio.VideoEditor
 ```
 
 The first install also downloads the GNOME runtime, about 450 MB. After
-that, U Stu shows up in your app menu.
+that, U-Stu shows up in your app menu.
 
 On **Linux Mint** you can double-click the downloaded file instead, and it
 opens in Software Manager.
@@ -48,7 +48,7 @@ wget https://software.unicornviz.com/u-studio-video-editor-dropin-effects-latest
 flatpak install --user ./u-studio-video-editor-dropin-effects-latest.flatpak
 ```
 
-Restart U Stu after installing. **Settings › Drop-ins** lists the installed
+Restart U-Stu after installing. **Settings › Drop-ins** lists the installed
 add-ons; you can switch one off there. If an add-on is for another version
 of the app, it's listed under "Couldn't load" and says which version it
 needs. To remove it:

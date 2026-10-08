@@ -1,4 +1,4 @@
-// The designer's window closing (a demo blocker, 2026-09-29): closing U Stu
+// The designer's window closing (a demo blocker, 2026-09-29): closing U-Stu
 // Titles with a layer selected crashed in GtkListBox's dispose, which
 // emitted row-selected into the layers panel after the window's C++ object
 // was gone. Each part now disconnects its handlers in its destructor. Run

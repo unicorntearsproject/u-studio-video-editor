@@ -3,7 +3,7 @@
   <id>com.ustudio.Titles</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
-  <name>U Stu Titles</name>
+  <name>U-Stu Titles</name>
   <summary>Design animated titles and lower thirds</summary>
   <url type="homepage">https://djunicorntears.com</url>
   <developer id="com.djunicorntears">
@@ -11,7 +11,7 @@
   </developer>
   <description>
     <p>
-      U Stu Titles designs the titles U Stu Video Editor plays: lower thirds,
+      U-Stu Titles designs the titles U-Stu Video Editor plays: lower thirds,
       name tags, chapter cards and overlays, over your own video. This is an
       early beta for testers.
     </p>

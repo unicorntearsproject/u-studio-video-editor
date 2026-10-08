@@ -16,10 +16,10 @@ struct ProjectLoadError
     {
         Missing,     // no file at the path
         Unreadable,  // there, but can't be read (permissions, not XML)
-        NotAProject, // readable, but not a U Stu project
+        NotAProject, // readable, but not a U-Stu project
         TooNew,      // a format newer than this build reads
         TooOld,      // a format older than any this build migrates
-        Invalid,     // a U Stu project whose content doesn't hold together
+        Invalid,     // a U-Stu project whose content doesn't hold together
     };
     Kind kind = Kind::Invalid;
     std::string message;

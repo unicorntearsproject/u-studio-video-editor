@@ -183,7 +183,7 @@ if titles_share_enabled
   test('titles-share', titles_test_share, timeout: 120)
 endif
 
-# ADR-020: no network library in the editor, the render tool or U Stu Titles
+# ADR-020: no network library in the editor, the render tool or U-Stu Titles
 # (and what this build loads into them); the helper alone has one.
 titles_no_network_args = [meson.current_source_dir() / 'no_network.sh', meson.project_source_root(),
                           titles_app_exe, titles_mlt_module,

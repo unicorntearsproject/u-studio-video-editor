@@ -22,7 +22,7 @@ std::string randomState()
     return out;
 }
 
-constexpr const char *kPage = "<!doctype html><meta charset=utf-8><title>U Stu</title>"
+constexpr const char *kPage = "<!doctype html><meta charset=utf-8><title>U-Stu</title>"
                               "<body style=\"font-family:sans-serif;background:#120c1f;color:#ffeffb;"
                               "text-align:center;padding-top:20vh\"><h1>%s</h1><p>%s</p></body>";
 
@@ -103,7 +103,7 @@ void LoopbackSignIn::onCallback(SoupServer *, SoupServerMessage *message, const 
     };
     const std::string error = value("error");
     gchar *page = g_strdup_printf(kPage, error.empty() ? "Signed in" : "Not signed in",
-                                  error.empty() ? "You can close this tab and go back to U Stu." : "Go back to U Stu.");
+                                  error.empty() ? "You can close this tab and go back to U-Stu." : "Go back to U-Stu.");
     soup_server_message_set_status(message, 200, nullptr);
     soup_server_message_set_response(message, "text/html; charset=utf-8", SOUP_MEMORY_TAKE, page, strlen(page));
     static_cast<LoopbackSignIn *>(self)->received(value("code"), value("state"), error);
@@ -125,7 +125,7 @@ std::string loadRefreshToken(const std::string &base)
 void storeRefreshToken(const std::string &base, const std::string &token)
 {
 #ifdef TITLES_HAVE_LIBSECRET
-    secret_password_store_sync(schema(), SECRET_COLLECTION_DEFAULT, "U Stu template sharing", token.c_str(), nullptr,
+    secret_password_store_sync(schema(), SECRET_COLLECTION_DEFAULT, "U-Stu template sharing", token.c_str(), nullptr,
                                nullptr, "service", base.c_str(), nullptr);
 #else
     (void)base;

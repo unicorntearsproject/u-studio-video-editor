@@ -19,7 +19,7 @@ Settings are saved automatically.
 
 Settings › Performance › Hardware. **Off by default in the Flatpak**; turn
 it on here, and it stays on through updates (a build you compile yourself
-starts with it on). When it's on and U Stu starts, it checks in the
+starts with it on). When it's on and U-Stu starts, it checks in the
 background that your graphics card can do the work, and if it can, the
 preview composites your tracks and places, scales, crops and flips your
 clips on the graphics card. The processor is then free, so
@@ -39,7 +39,7 @@ Good to know:
   included; one started with GPU acceleration off uses the processor.
   Turning it off in the middle of an export doesn't affect that export.
 - If the graphics card stops working mid-session, playback carries on on
-  the processor and U Stu tells you. If U Stu ever closes unexpectedly
+  the processor and U-Stu tells you. If U-Stu ever closes unexpectedly
   while using the graphics card, it turns GPU acceleration off and says so
   the next time it starts; you can turn it back on here.
 

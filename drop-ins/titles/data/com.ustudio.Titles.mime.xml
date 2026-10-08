@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- .ustitle: a U Stu title (doc 16), versioned XML with a <ustitle> root. -->
+<!-- .ustitle: a U-Stu title (doc 16), versioned XML with a <ustitle> root. -->
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
   <mime-type type="application/x-ustudio-title">
-    <comment>U Stu title</comment>
+    <comment>U-Stu title</comment>
     <sub-class-of type="application/xml"/>
     <glob pattern="*.ustitle"/>
     <root-XML localName="ustitle"/>

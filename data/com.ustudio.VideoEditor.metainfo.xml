@@ -3,12 +3,12 @@
   <id>com.ustudio.VideoEditor</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
-  <name>U Stu Video Editor</name>
+  <name>U-Stu Video Editor</name>
   <summary>Non-linear video editor built on GTK4, libadwaita and MLT</summary>
   <url type="homepage">https://djunicorntears.com</url>
   <description>
     <p>
-      U Stu is a multi-track video editor for GNOME, made for livestream
+      U-Stu is a multi-track video editor for GNOME, made for livestream
       and promo editing at 1080p and 4K. This is a beta for testers: expect
       rough edges, and please attach the log files to any report.
     </p>

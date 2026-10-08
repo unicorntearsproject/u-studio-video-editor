@@ -149,12 +149,12 @@ class TitleWatcher
 void launch(app::ShellHost &host, const std::string &path, const std::string &name, GdkTexture *backdrop, bool gallery)
 {
     const std::string error = launchTitlesApp(path, backdrop, gallery);
-    host.showStatus(error.empty() ? (gallery ? "Pick a template for " + name + " in U Stu Titles, then save it."
-                                             : "Editing " + name + " in U Stu Titles: save it there to update it here.")
-                                  : "Couldn't open U Stu Titles: " + error);
+    host.showStatus(error.empty() ? (gallery ? "Pick a template for " + name + " in U-Stu Titles, then save it."
+                                             : "Editing " + name + " in U-Stu Titles: save it there to update it here.")
+                                  : "Couldn't open U-Stu Titles: " + error);
 }
 
-// Opens a title clip in U Stu Titles, over the editor's frame at the
+// Opens a title clip in U-Stu Titles, over the editor's frame at the
 // playhead (within the clip) without the title itself; with its template
 // gallery when `gallery` (New Title).
 void editTitleClip(app::ShellHost &host, core::ClipId id, bool gallery = false)
@@ -173,7 +173,7 @@ void editTitleClip(app::ShellHost &host, core::ClipId id, bool gallery = false)
     }
     const core::FrameIndex frame = std::clamp(host.currentFrame(), clip.position, clip.end() - 1);
     std::shared_ptr<const core::Project> project = model.snapshot();
-    host.showStatus("Opening " + name + " in U Stu Titles…");
+    host.showStatus("Opening " + name + " in U-Stu Titles…");
     app::ShellHost *hostPtr = &host; // the window lives for the process
     startJob([project, id, frame, path, name, hostPtr, gallery] {
         auto backdrop = std::make_shared<Backdrop>(renderBackdrop(project, id, frame));
@@ -221,7 +221,7 @@ void onNewTitle(GSimpleAction *, GVariant *, gpointer target)
     editTitleClip(host, *made, true);
 }
 
-// The header's "T" (Open U Stu Titles): a selected title clip's title,
+// The header's "T" (Open U-Stu Titles): a selected title clip's title,
 // else the designer's gallery on a new, untitled title. The timeline
 // doesn't change; New Title (Shift+T) is the way to add one.
 void onOpenTitles(GSimpleAction *, GVariant *, gpointer target)
@@ -238,8 +238,8 @@ void onOpenTitles(GSimpleAction *, GVariant *, gpointer target)
         }
     }
     const std::string error = launchTitlesApp({}, nullptr, true);
-    host.showStatus(error.empty() ? "U Stu Titles is open with its templates."
-                                  : "Couldn't open U Stu Titles: " + error);
+    host.showStatus(error.empty() ? "U-Stu Titles is open with its templates."
+                                  : "Couldn't open U-Stu Titles: " + error);
 }
 
 // app.install-template-pack(s): a pack handed over by u-studio-share (ADR-020)
@@ -529,6 +529,8 @@ std::string newTitlePath(const std::string &projectFolder)
             folder = core::pathFromUtf8(videos) / "U Stu Titles";
         else
             folder = core::pathFromUtf8(g_get_user_data_dir()) / "ustudio" / "U Stu Titles";
+        // A folder name on disk: it keeps the name it had before the display
+        // name became "U-Stu" (2026-10-08), so titles saved there stay found.
     }
     std::error_code ec;
     for (int n = 1;; ++n) {
@@ -596,19 +598,19 @@ void extendShell(app::ShellHost &host)
     host.addActions({{"titles-new", "New Title", "Titles", {"<Shift>t"}, &onNewTitle},
                      {"titles-edit", "Edit Title", "Titles", {"<Control><Shift>t"}, &onEditTitle},
                      {"titles-bake", "Bake Title", "Titles", {}, &onBakeTitle},
-                     {"titles-open", "Open U Stu Titles", "Titles", {}, &onOpenTitles},
+                     {"titles-open", "Open U-Stu Titles", "Titles", {}, &onOpenTitles},
                      {"titles-export-captions", "Export Captions…", "Titles", {}, &onExportCaptions}},
                     &host);
     host.addHints(
-        {{"titles.open", "Header bar", "Open U Stu Titles, the title designer",
+        {{"titles.open", "Header bar", "Open U-Stu Titles, the title designer",
           "With a title clip selected, it opens that title; otherwise the template gallery", "titles-open", nullptr},
          {"titles.new", "Titles", "New title",
-          "A new title at the playhead on the active track, opened in U Stu Titles to pick a template", "titles-new",
+          "A new title at the playhead on the active track, opened in U-Stu Titles to pick a template", "titles-new",
           nullptr},
-         {"titles.edit", "Titles", "Edit title", "Open the selected title clip in U Stu Titles", "titles-edit",
+         {"titles.edit", "Titles", "Edit title", "Open the selected title clip in U-Stu Titles", "titles-edit",
           "Double-click a title clip"},
          {"titles.bake", "Titles", "Bake title",
-          "Render the clip to a video file with transparency, for tools without U Stu's titles; undo "
+          "Render the clip to a video file with transparency, for tools without U-Stu's titles; undo "
           "brings the live title back",
           "titles-bake", nullptr},
          {"titles.export-captions", "Titles", "Export captions",
@@ -644,7 +646,7 @@ void extendShell(app::ShellHost &host)
         gtk_icon_theme_add_resource_path(gtk_icon_theme_get_for_display(display), "/com/ustudio/Titles/editor/icons");
     GtkWidget *button = gtk_button_new_from_icon_name("ustudio-titles-symbolic");
     gtk_actionable_set_action_name(GTK_ACTIONABLE(button), "win.titles-open");
-    gtk_accessible_update_property(GTK_ACCESSIBLE(button), GTK_ACCESSIBLE_PROPERTY_LABEL, "Open U Stu Titles", -1);
+    gtk_accessible_update_property(GTK_ACCESSIBLE(button), GTK_ACCESSIBLE_PROPERTY_LABEL, "Open U-Stu Titles", -1);
     host.setTooltip(button, "titles.open");
     host.addHeaderButton(button);
 }
