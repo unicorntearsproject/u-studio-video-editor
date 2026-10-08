@@ -389,6 +389,30 @@ Publish the app and its extensions together, after the smoke test and
 wget) with 403, so check a published URL with a browser User-Agent:
 `curl -sI -A 'Mozilla/5.0' <url>`.
 
+### Release key and tags
+
+Releases are signed with U-Stu's own OpenPGP release key (owner,
+2026-10-08), in the Rusty Wave pattern: a certify-only ed25519 primary and
+a signing-only ed25519 subkey, neither expiring, uid "U-Stu Video Editor
+Release <noreply@users.noreply.github.com>". The public key is
+`packaging/keys/u-stu-release.asc`:
+
+| Key | Fingerprint |
+|---|---|
+| Primary (certify; the one to pin) | `FE210DDDE2106FDB0C16BFF5D12963B6E6B0D13F` |
+| Signing subkey | `19157495D0C6700EE4364476570EAA9409370813` |
+
+The secret key stays in the owner's keyring and is never copied, printed
+or committed. Sign with the subkey: `USTUDIO_SIGNING_KEY=19157495D0C6700EE4364476570EAA9409370813 just release-dir <v>`.
+
+Every releasable build has an annotated `v<version>` tag signed with the
+subkey (`git tag -v` checks it), from 0.50.0-beta.1 on. The tag sits at
+the commit that bumped `meson.build` to that version, or at the merge that
+set it where no commit did. A new release is tagged at the commit it's
+built from, with the tagger set to the key's noreply identity, and pushed
+by name (`git push origin refs/tags/v<version>`, never `--tags`: the repo
+also holds MLT's own tags).
+
 ### Corresponding source
 
 The Flatpaks bundle GPL code (FFmpeg with x264, frei0r, MLT), so every
