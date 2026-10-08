@@ -4,6 +4,12 @@ All notable user-facing changes to this project are documented here.
 Format: newest first, one line per change. Internal refactors, tests, and
 docs-only changes are not listed (CLAUDE.md).
 
+## 0.82.0-beta.1
+
+- The inspector (Effects, Add, Transitions, Title) has a button at the end
+  of its tabs to hide it, F9 shows or hides it, a wide window remembers
+  whether it was open, and its tabs sit clear of the header bar.
+
 ## 0.81.0-beta.1
 
 - A project that won't open says why (not found, saved by a newer version,
