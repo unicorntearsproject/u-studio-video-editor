@@ -73,4 +73,4 @@ Each menu item's accessible name is its label: "First item", "Second item".
 
 ## Additional information
 
-Found while scripting UI tests over AT-SPI for a GTK4 app: menu items could only be told apart by their order. Repro and probe: https://github.com/iDoMeteor/u-studio-video-editor/tree/main/tools/upstream-repros/gtk/popover-menu-item-no-name
+Found while scripting UI tests over AT-SPI for a GTK4 app: menu items could only be told apart by their order. Repro and probe: https://github.com/unicorntearsproject/u-studio-video-editor/tree/main/tools/upstream-repros/gtk/popover-menu-item-no-name

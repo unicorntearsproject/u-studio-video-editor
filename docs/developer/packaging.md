@@ -140,7 +140,7 @@ manifest (the app pinned to the tag's commit), the module files, and
 |---|---|---|
 | `com.unicornviz.UStu` | Token on unicornviz.com | The domain already hosts the downloads |
 | `com.djunicorntears.UStu` | Token on djunicorntears.com | The current homepage |
-| `io.github.idometeor.UStu` | Nothing extra | Ties the ID to the GitHub account and repo name |
+| `io.github.unicorntearsproject.UStu` | Nothing extra | Ties the ID to the GitHub account (renamed from iDoMeteor, 2026-10) and repo name |
 
 Renaming touches these:
 - the app ID in `main.cpp`;
