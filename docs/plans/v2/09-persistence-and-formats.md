@@ -67,31 +67,51 @@ resources.
 
 ### Versioning
 
-`<property name="ustudio:format_version">5</property>` on the root tractor.
+`<property name="ustudio:format_version">N</property>` on the sequence
+tractor, plus `ustudio:saved_by` (the app version that wrote the file, from
+0.80.3 on), so a build that can't open it can say which update it needs.
 
-> REVIEW: VE Core, 2026-09-29: the writer now writes the lowest version that
-> holds the file's content. 6 (clip transforms, ADR-018) is the base; 7 only
-> when the file has something an older build would silently lose and then
-> drop on its next save (transform keyframes; VE Effects' project-relative
-> file values next), so that build refuses the file instead of damaging it.
-> Records that raise it call `xml_detail::requireFormatVersion()`.
+**The policy** (owner P0, 2026-10-08: "any changes to file formats is
+versioned and handled gracefully"):
 
-> REVIEW: VE Core, 2026-09-25: format 5 (IP2, doc 15 "Persistence") adds effects as `<filter>`s (the model record in `ustudio:*` properties on the record entry, record playlist or sequence tractor; native properties on every render cut, keyframes as per-cut MLT animation strings), clip source parameters, transition recipes and parameters, and adjustment blocks and looks in never-played playlists. It only adds, so formats 3 and 4 still load directly; `tests/core/data/format4.ustudio` is a file the format-4 writer produced, kept as the migration fixture.
+1. **Every change to what a project file means bumps the version.** Adding a
+   record an older build would misread or silently drop is a change; so is
+   renaming or reinterpreting one. A file is written at the *lowest* version
+   that holds its content: the base version, raised by
+   `xml_detail::requireFormatVersion()` only when it contains something
+   newer (format 7: transform keyframes, project-relative effect files). An
+   ordinary project stays readable by older builds.
+2. **Every older version still opens.** The reader accepts
+   `oldestReadableProjectFormat()` to `newestReadableProjectFormat()`
+   (`core/xml/reader.h`). So far each bump only added records, so the reader
+   reads every version directly; a bump that changes existing records adds
+   its migration there, in code.
+3. **One fixture per version, from that version's own writer.**
+   `tests/core/data/formatN.ustudio`, made by building the last commit that
+   writes N and saving a representative project
+   (`tests/core/data/generate_format_fixture.cpp.txt`). The core test "every
+   past project format still opens" loads each one, checks its content and
+   re-saves it. A new version adds its fixture in the same landing.
+4. **A newer file is refused, never guessed at**, with a dialog that names
+   the version that saved it ("Saved by a newer U Stu … update this one").
+   The file is left untouched.
+5. **Data this build doesn't understand is kept.** An effect from an add-on
+   that isn't installed, or a transition style this build can't play, stays
+   in the model and is written back on save (it plays as nothing, or as a
+   plain dissolve, meanwhile).
+6. **Every failure to open is logged** (`[app] couldn't open a project: <path>:
+   <reason>`), and the user sees a dialog for its kind: not found (with a
+   pointer to `.ustudio-backups`), saved by a newer version, too old, not a
+   U Stu project (including the first prototype's INI files, which this
+   version doesn't open), unreadable, or damaged.
 
-> REVIEW: (Claude, 2026-09-24) Current version is 4. Format 4 writes each track
-> twice: a render playlist the tractor plays, identical to EngineSync's
-> graph (dissolve sub-tractors, stream-switch variant producers, volume
-> filters), and an unreferenced record playlist holding the model. That
-> makes `melt` playback of a saved project exact (doc 12, M1). The reader
-> still opens format 3 directly; no migration function was needed because
-> the record data is unchanged.
-The reader refuses newer versions with a clear message and migrates older
-ones in code (`core/xml/migrations.cpp`, one function per version bump).
-Every migration has a fixture file in `tests/fixtures/projects/`.
-
-> REVIEW: Claude (2026-09-24): neither exists yet. The reader reads formats 3 and 4 directly
-> (`kOldestReadableFormatVersion`, `reader.cpp`); the first bump that changes
-> record data adds `migrations.cpp` and the fixtures.
+History: 3 adds `ustudio:position` and transitions; 4 writes each track
+twice (a render playlist the tractor plays, identical to EngineSync's graph,
+and a record playlist holding the model), so `melt` plays a saved project
+exactly; 5 adds effects as `<filter>`s, clip source parameters, transition
+recipes, adjustment blocks and looks (IP2, doc 15); 6 adds clip transforms
+(ADR-018); 7 is written only for transform keyframes and project-relative
+effect files.
 
 ## Save semantics
 

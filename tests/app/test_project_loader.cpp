@@ -122,7 +122,7 @@ TEST_CASE("ProjectLoader: a real project parses on the pool; a bad one reports i
 
     core::concurrency::ThreadPool pool(2);
     FakeMain main;
-    ProjectLoader loader(pool, main.post(), core::loadProject);
+    ProjectLoader loader(pool, main.post(), core::loadProjectFile);
     std::optional<ProjectLoader::Result> good;
     loader.load((dir / "p.ustudio").string(), [&](ProjectLoader::Result r) { good = std::move(r); });
     main.runAfterPosts(1);
@@ -135,6 +135,15 @@ TEST_CASE("ProjectLoader: a real project parses on the pool; a bad one reports i
     main.runAfterPosts(2);
     REQUIRE(failed.has_value());
     CHECK_FALSE(failed->has_value());
-    CHECK_FALSE(failed->error().empty());
+    CHECK(failed->error().kind == core::ProjectLoadError::Kind::Unreadable);
+    CHECK_FALSE(failed->error().message.empty());
+
+    // A missing file says so, rather than looking like a format problem.
+    std::optional<ProjectLoader::Result> missing;
+    loader.load((dir / "gone.ustudio").string(), [&](ProjectLoader::Result r) { missing = std::move(r); });
+    main.runAfterPosts(3);
+    REQUIRE(missing.has_value());
+    REQUIRE_FALSE(missing->has_value());
+    CHECK(missing->error().kind == core::ProjectLoadError::Kind::Missing);
     fs::remove_all(dir);
 }

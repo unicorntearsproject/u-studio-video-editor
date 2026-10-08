@@ -9,6 +9,7 @@
 #include <charconv>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <optional>
 #include <tuple>
 #include <unordered_map>
@@ -280,20 +281,62 @@ std::map<std::string, std::string> parseSettingsJson(const std::string &json)
 
 } // namespace
 
+int oldestReadableProjectFormat()
+{
+    return kOldestReadableFormatVersion;
+}
+
+int newestReadableProjectFormat()
+{
+    return kFormatVersion;
+}
+
 std::expected<Model, std::string> loadProject(const std::string &path)
 {
+    std::expected<Model, ProjectLoadError> loaded = loadProjectFile(path);
+    if (!loaded)
+        return std::unexpected(loaded.error().message);
+    return std::move(*loaded);
+}
+
+std::expected<Model, ProjectLoadError> loadProjectFile(const std::string &path)
+{
+    using Kind = ProjectLoadError::Kind;
+    auto fail = [](Kind kind, std::string message, int formatVersion = 0, std::string savedBy = {}) {
+        return std::unexpected(ProjectLoadError{kind, std::move(message), formatVersion, std::move(savedBy)});
+    };
+    std::error_code existsEc;
+    if (!fs::exists(fs::path(path), existsEc))
+        return fail(Kind::Missing, path + ": no such file");
+    {
+        // The first prototype's projects (before 2026-09-17) were INI files
+        // starting "[Project]"; this version doesn't open them (owner,
+        // 2026-10-08). Said plainly, not as "failed to parse".
+        std::ifstream head(fs::path(path), std::ios::binary);
+        if (!head)
+            return fail(Kind::Unreadable, path + ": can't be read (permissions?)");
+        std::string start(64, '\0');
+        head.read(start.data(), static_cast<std::streamsize>(start.size()));
+        start.resize(static_cast<size_t>(head.gcount()));
+        const size_t first = start.find_first_not_of(" \r\n");
+        if (first != std::string::npos && start.compare(first, 9, "[Project]") == 0)
+            return fail(Kind::NotAProject, path +
+                                               ": a project from the first prototype editor, which this version can't "
+                                               "open");
+    }
     // Files named relative to the project (a LUT in its luts folder) are
     // read against the folder it's in now (xml_detail::ProjectFolderScope).
     std::error_code folderEc;
-    const xml_detail::ProjectFolderScope folder(std::filesystem::absolute(std::filesystem::path(path), folderEc).parent_path());
+    const xml_detail::ProjectFolderScope folder(
+        std::filesystem::absolute(std::filesystem::path(path), folderEc).parent_path());
     xmlDocPtr doc = xmlReadFile(path.c_str(), nullptr, XML_PARSE_NOBLANKS);
     if (!doc)
-        return std::unexpected("failed to parse " + path);
+        return fail(Kind::Unreadable, "failed to parse " + path + " (not XML)");
 
     xmlNodePtr mlt = xmlDocGetRootElement(doc);
     if (!mlt || xmlStrcmp(mlt->name, BAD_CAST "mlt") != 0) {
         xmlFreeDoc(doc);
-        return std::unexpected(path + ": not an MLT XML file");
+        return fail(Kind::NotAProject, path + ": not an MLT XML file");
     }
 
     // The sequence tractor is the one carrying ustudio:format_version. From
@@ -311,20 +354,23 @@ std::expected<Model, std::string> loadProject(const std::string &path)
         tractor = firstChildNamed(mlt, "tractor");
     if (!tractor) {
         xmlFreeDoc(doc);
-        return std::unexpected(path + ": no <tractor> element");
+        return fail(Kind::NotAProject, path + ": no <tractor> element");
     }
 
     std::optional<std::string> formatVersionStr = getProperty(tractor, "ustudio:format_version");
     if (!formatVersionStr) {
         xmlFreeDoc(doc);
-        return std::unexpected(
-            path + ": not a ustudio project (no ustudio:format_version)");
+        return fail(Kind::NotAProject, path + ": not a ustudio project (no ustudio:format_version)");
     }
     int formatVersion = static_cast<int>(toI64(*formatVersionStr));
     if (formatVersion < kOldestReadableFormatVersion || formatVersion > kFormatVersion) {
+        const std::string savedBy = prop(tractor, "ustudio:saved_by");
         xmlFreeDoc(doc);
-        return std::unexpected(path + ": unsupported ustudio:format_version " + std::to_string(formatVersion) +
-                               " (this build writes " + std::to_string(kFormatVersion) + ")");
+        return fail(formatVersion > kFormatVersion ? Kind::TooNew : Kind::TooOld,
+                    path + ": ustudio:format_version " + std::to_string(formatVersion) +
+                        (savedBy.empty() ? std::string() : " (saved by " + savedBy + ")") + "; this build reads " +
+                        std::to_string(kOldestReadableFormatVersion) + " to " + std::to_string(kFormatVersion),
+                    formatVersion, savedBy);
     }
 
     fs::path projectDir = fs::path(path).parent_path();
@@ -358,8 +404,8 @@ std::expected<Model, std::string> loadProject(const std::string &path)
     // instead of dividing by zero somewhere downstream.
     if (seq.profile.fps.num <= 0 || seq.profile.fps.den <= 0) {
         xmlFreeDoc(doc);
-        return std::unexpected(path + ": invalid <profile> frame rate (frame_rate_num/frame_rate_den must be "
-                                      "positive)");
+        return fail(Kind::Invalid, path + ": invalid <profile> frame rate (frame_rate_num/frame_rate_den must be "
+                                          "positive)");
     }
 
     Project project;
@@ -467,7 +513,7 @@ std::expected<Model, std::string> loadProject(const std::string &path)
                 // cleanly instead of letting an unordered_map::at() throw
                 // past this function's std::expected contract.
                 xmlFreeDoc(doc);
-                return std::unexpected(path + ": clip entry references unknown producer '" + producerNodeId + "'");
+                return fail(Kind::Invalid, path + ": clip entry references unknown producer '" + producerNodeId + "'");
             }
 
             Clip clip;
@@ -655,7 +701,7 @@ std::expected<Model, std::string> loadProject(const std::string &path)
             message += problems[i];
         }
         message += ")";
-        return std::unexpected(message);
+        return fail(Kind::Invalid, message);
     }
     return model;
 }

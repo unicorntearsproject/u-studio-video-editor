@@ -18,6 +18,9 @@ namespace fs = std::filesystem;
 
 namespace {
 
+std::string g_portalRoot; // where exportThroughPortal() found the portal mounted
+
+
 // Registers `file` with the real xdg-document-portal (Documents.Add, the
 // same call the file chooser makes for an existing file) and returns its
 // FUSE path, or nullopt when there's no session bus or portal (CI
@@ -49,8 +52,25 @@ std::optional<std::string> exportThroughPortal(const std::string &file)
     }
     const char *docId = nullptr;
     g_variant_get(reply, "(&s)", &docId);
-    std::string portalPath =
-        std::string(g_get_user_runtime_dir()) + "/doc/" + docId + "/" + fs::path(file).filename().string();
+    // Where this portal is mounted: the desktop's at $XDG_RUNTIME_DIR/doc,
+    // a private one (the headless test wrapper's session) elsewhere.
+    std::string root = std::string(g_get_user_runtime_dir()) + "/doc";
+    GDBusConnection *again = g_bus_get_sync(G_BUS_TYPE_SESSION, nullptr, nullptr);
+    if (GVariant *mount = again ? g_dbus_connection_call_sync(again, "org.freedesktop.portal.Documents",
+                                                              "/org/freedesktop/portal/documents",
+                                                              "org.freedesktop.portal.Documents", "GetMountPoint",
+                                                              nullptr, G_VARIANT_TYPE("(ay)"), G_DBUS_CALL_FLAGS_NONE,
+                                                              5000, nullptr, nullptr)
+                                : nullptr) {
+        GVariant *bytes = g_variant_get_child_value(mount, 0);
+        root = g_variant_get_bytestring(bytes);
+        g_variant_unref(bytes);
+        g_variant_unref(mount);
+    }
+    if (again)
+        g_object_unref(again);
+    g_portalRoot = root + "/";
+    std::string portalPath = root + "/" + docId + "/" + fs::path(file).filename().string();
     g_variant_unref(reply);
     return portalPath;
 }
@@ -80,7 +100,7 @@ TEST_CASE("portal::resolveHostPath maps a document-portal path back to the real 
     REQUIRE(fs::exists(*portalPath));
     CHECK(*portalPath != host);
 
-    std::string resolved = portal::resolveHostPath(*portalPath);
+    std::string resolved = portal::resolveHostPath(*portalPath, false, g_portalRoot);
     CHECK(resolved == host);
 
     // The point of resolving: the atomic save's temp sibling can be created

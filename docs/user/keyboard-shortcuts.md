@@ -57,6 +57,7 @@ a space, it doesn't play. Click the timeline or the preview to use them again.
 | `Ctrl+Shift+S` | Save as |
 | `Ctrl+I` | Import |
 | `Ctrl+Shift+I` | Import folder |
+| `Ctrl+Q` | Quit (asks first if there are unsaved changes) |
 
 ## Transform
 

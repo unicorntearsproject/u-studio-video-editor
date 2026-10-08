@@ -13,7 +13,11 @@ namespace ustudio::app::portal {
 
 std::string resolveHostPath(const std::string &path, bool createIfMissing)
 {
-    const std::string portalRoot = std::string(g_get_user_runtime_dir()) + "/doc/";
+    return resolveHostPath(path, createIfMissing, std::string(g_get_user_runtime_dir()) + "/doc/");
+}
+
+std::string resolveHostPath(const std::string &path, bool createIfMissing, const std::string &portalRoot)
+{
     if (path.rfind(portalRoot, 0) != 0)
         return path;
 
